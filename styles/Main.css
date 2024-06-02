@@ -1,0 +1,54 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+}
+
+header {
+  background-color: #125dde;
+  padding: 30px;
+  text-align: center;
+  font-size: 35px;
+}
+
+main {
+  display: flexbox;
+}
+
+article {
+  background-color: #375181;
+  padding: 30px;
+}
+
+h1 {
+  text-align: center;
+}
+
+/* Allgemeine Formatierung der Tabelle */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd; /* Rand um die gesamte Tabelle */
+}
+
+/* Header-Zellen */
+th {
+  background-color: #f2f2f2; /* Hintergrundfarbe des Kopfbereichs */
+  color: #333; /* Textfarbe des Kopfbereichs */
+  font-weight: bold; /* Fettschrift für Überschriften */
+  padding: 8px; /* Innenabstand */
+  border: 1px solid #ddd; /* Rand um jede Zelle */
+}
+
+/* Datenzellen */
+td {
+  padding: 8px; /* Innenabstand */
+  border: 1px solid #ddd; /* Rand um jede Zelle */
+}
+
+
+.selected {
+  background-color: #58a1f5; /* Hintergrundfarbe für ausgewählte Zeile */
+}
+
