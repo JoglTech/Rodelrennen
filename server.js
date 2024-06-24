@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-//const SQLiteMemberMangager = require("./scripts/SQLiteManager");
+const SQLiteMemberMangager = require("./static/scripts/SQLiteManager");
 
 
 const PORT = 8000;
@@ -13,24 +13,24 @@ app.use(express.urlencoded({
   extended: true
 }));
 
-//const sqliteManager = new SQLiteMemberMangager();
+const sqliteManager = new SQLiteMemberMangager();
 
 app.get('/', (req, res) => {
   const pathToFile = path.join(__dirname, 'static', 'html', 'index.html');
   res.sendFile(pathToFile);
 });
 
-/*
-app.post('/api/members', async (req, res) => {
+
+app.post('/process-form', async (req, res) => {
     const member = req.body;
     const id = await sqliteManager.addMember(member);
-    member.href = `/api/members/${id}`;
+    member.href = `/process-form${id}`;
     res
       .status(201)
-      .location(`/api/members/${id}`)
+      .location(`/process-form/${id}`)
       .send(member);
   });
-*/
+
 const server = app.listen(PORT, () => {
     console.log(`Webservice läuft unter http://${HOST}:${PORT}`);
 });

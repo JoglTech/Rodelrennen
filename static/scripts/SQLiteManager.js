@@ -15,7 +15,7 @@ module.exports = class SQLiteMemberMangager {
                     firstName TEXT, 
                     lastName TEXT, 
                     birthyear INTEGER,
-                    gender TEXT,
+                    gender TEXT
                 )`
         );
     }
@@ -23,13 +23,17 @@ module.exports = class SQLiteMemberMangager {
     async addMember(member) {
         return new Promise((resolve, reject) => {
             db.run(
-              `INSERT
+                `INSERT
                 INTO members (firstName, lastName, birthyear, gender)
-                VALUES (?, ?, ?, ?, ?)`,
-              [member.firstName, member.lastName, member.birthyear, member.gender],
-              function() {
-                resolve(this.lastID);
-              }
+                VALUES (?, ?, ?, ?)`,
+                [member.fname, member.sname, member.birthyear, member.gender],
+                function(err) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(this.lastID);
+                    }
+                }
             );
         });
     }
