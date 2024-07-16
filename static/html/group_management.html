@@ -1,0 +1,45 @@
+<article id="page" data-page-type="gruppenverwaltung">
+    <h1>Gruppenverwaltung</h1>
+    <form id="groupForm">
+        <div class="form-group">
+            <label for="name">Bezeichnung:</label>
+            <input type="text" id="name" name="name">
+        </div>
+        <div class="form-group">
+            <label for="startYear">von Jhg:</label>
+            <input type="text" id="startYear" name="startYear">
+        </div>
+        <div class="form-group">
+            <label for="endYear">bis Jhg:</label>
+            <input type="text" id="endYear" name="endYear">
+        </div>
+        <div class="form-group">
+            <label for="gender">Geschlecht:</label>
+            <select id="gender" name="gender">
+                <option value=""></option>
+                <option value="männlich">männlich</option>
+                <option value="weiblich">weiblich</option>
+                <option value="divers">divers</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="bodinger">Bodinger:</label>
+            <input type="checkbox" id="bodinger" name="bodinger" value="1">
+        </div>
+        <div class="buttons">
+            <button id="buttonAddGroup">Gruppe hinzufügen</button>
+            <button id="buttonDeleteGroup">Gruppe löschen</button>
+        </div>
+    </form><br><br>
+    <table id="grouptable">
+        <thead id="grouptableHead">
+            <tr>
+                <th>Bezeichnung</th>
+                <th>von Jhg</th>
+                <th>bis Jhg</th>
+                <th>Geschlecht</th>
+                <th>Bodinger</th>
+            </tr>
+        </thead>
+    </table>
+</article>

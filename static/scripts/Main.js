@@ -74,24 +74,152 @@
 ////////////////////////////////////////////////////////////////////
 
 //******************************************************************
-// add member to membertable
+// load correct page from link
 //******************************************************************
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', function() {
+    // Finde alle Links mit der Klasse "mdl-navigation__link"
+    const links = document.querySelectorAll('.mdl-navigation__link');
 
-    const buttonAdd = document.getElementById("buttonAdd");
-    buttonAdd.addEventListener("click", (event) => {
-        event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
-        createTable();
+    if (links.length === 0) {
+        console.error('Keine Links mit der Klasse "mdl-navigation__link" gefunden.');
+        return;
+    }
+
+    links.forEach(link => {
+        link.addEventListener('click', function(event) {
+            event.preventDefault(); // Verhindert das Standardverhalten des Links
+
+            // Die URL, die geladen werden soll
+            const url = this.href;
+
+            // Fetch API verwenden, um den Inhalt zu laden
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Netzwerk-Antwort war nicht ok');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    const contentDiv = document.getElementById('page-content');
+                    if (!contentDiv) {
+                        throw new Error('Element mit der ID "page-content" wurde nicht gefunden.');
+                    }
+                    // Den neuen Inhalt in das DIV mit der ID "page-content" einfügen
+                    contentDiv.innerHTML = data;
+
+                    const pageContent = document.getElementById('page');
+                    if (!pageContent) {
+                        console.error('Element mit der ID "page" wurde nicht gefunden.');
+                        return;
+                    }
+
+                    const pageType = pageContent.getAttribute('data-page-type');
+                    
+                    // Hier können Sie den Typ der Seite überprüfen und entsprechenden Code ausführen
+                    if (pageType === 'gruppenverwaltung') 
+                    {
+                        console.log('Gruppenverwaltung Seite ist geladen.');
+                        // Fügen Sie hier spezifische Logik für die Gruppenverwaltung-Seite hinzu
+                        groupManagement();
+                    } 
+                    else if (pageType === 'teilnehmerbearbeitung') 
+                    {
+                        console.log('Teilnehmerbearbeitung Seite ist geladen.');
+                        // Fügen Sie hier spezifische Logik für die Teilnehmerbearbeitung-Seite hinzu
+                        participantProcessing();
+                    } 
+                    else if (pageType === 'zeiterfassung') 
+                    {
+                        console.log('Zeiterfassung Seite ist geladen.');
+                        // Fügen Sie hier spezifische Logik für die Zeiterfassung-Seite hinzu
+                    } 
+                    else if (pageType === 'ergebnisliste') 
+                    {
+                        console.log('Ergebnisliste Seite ist geladen.');
+                        // Fügen Sie hier spezifische Logik für die Ergebnisliste-Seite hinzu
+                    } 
+                    else 
+                    {
+                        console.log('Unbekannte Seite ist geladen.');
+                        // Fügen Sie hier eine Standardaktion für unbekannte Seiten hinzu, falls benötigt
+                    }
+                })
+                .catch(error => {
+                    console.error('Es gab ein Problem mit der Fetch-Operation:', error);
+                });
+        });
     });
 });
 
-async function createTable() {
 
+//******************************************************************
+// page specific scripts
+//******************************************************************
+
+//participant processing
+function participantProcessing() {
+
+    //******************************************************************
+    // add member to membertable
+    //******************************************************************
+    const buttonAdd = document.getElementById("buttonAdd");
+    if (!buttonAdd) {
+        console.error('Element mit der ID "buttonAdd" wurde nicht gefunden.');
+        return;
+    }
+
+    buttonAdd.addEventListener("click", (event) => {
+        event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
+        createMemberTable();
+    });
+
+    //******************************************************************
+    // select member and delete member from membertable
+    //******************************************************************
+
+    // Selektierte Zeile als globale Variable speichern
+    var selectedRow = null;
+
+    const membertable = document.getElementById("membertable");
+    if (membertable) {
+        membertable.addEventListener("click", function (event) {
+            var clickedRow = event.target.parentNode; // Das TR-Element der angeklickten Zelle abrufen
+            if (clickedRow.tagName === "TR") {
+                if (selectedRow) {
+                    // Wenn bereits eine Zeile ausgewählt wurde, die Markierung entfernen
+                    selectedRow.classList.remove("selected");
+                }
+                // Aktuelle Zeile als ausgewählt markieren
+                selectedRow = clickedRow;
+                selectedRow.classList.add("selected");
+            }
+        });
+    } else {
+        console.error('Element mit der ID "membertable" wurde nicht gefunden.');
+    }
+
+    const buttonDelete = document.getElementById("buttonDelete");
+    if (buttonDelete) {
+        buttonDelete.addEventListener("click", (event) => {
+            event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
+            deleteSelectedRow();
+        });
+    } else {
+        console.error('Element mit der ID "buttonDelete" wurde nicht gefunden.');
+    }
+}
+
+async function createMemberTable() {
     const form = document.getElementById("memberForm");
+    if (!form) {
+        console.error('Element mit der ID "memberForm" wurde nicht gefunden.');
+        return;
+    }
 
     const formData = new FormData(form);
     const jsonData = {};
-    
+
     formData.forEach((value, key) => {
         jsonData[key] = value;
     });
@@ -113,10 +241,10 @@ async function createTable() {
     if (fnameInput === "" || snameInput === "" || birthyearInput === "" || genderInput === "") {
         alert("Bitte füllen Sie alle Felder aus.");
         return; // Die Funktion wird beendet, wenn nicht alle Felder ausgefüllt sind
-    } else if ( ( !lettersOnlyRegex.test(fnameInput) ) || ( !lettersOnlyRegex.test(snameInput) ) ) {
+    } else if ((!lettersOnlyRegex.test(fnameInput)) || (!lettersOnlyRegex.test(snameInput))) {
         alert("Bitte für den Namen nur Buchstaben verwenden.");
         return;
-    } else if ( !(yearRegex.test(birthyearInput) && parseInt(birthyearInput) <= currentYear) ) {
+    } else if (!(yearRegex.test(birthyearInput) && parseInt(birthyearInput) <= currentYear)) {
         alert("Bitte eine gültige Jahreszahl eingeben.");
         return;
     }
@@ -136,6 +264,9 @@ async function createTable() {
 
             // Container-Element selektieren
             const table = document.getElementById('membertable');
+            if (!table) {
+                throw new Error('Element mit der ID "membertable" wurde nicht gefunden.');
+            }
 
             // Tabellenkörper erstellen
             const tbody = document.createElement('tbody');
@@ -153,7 +284,7 @@ async function createTable() {
             <td>
                 ${data.gender}
             </td>
-            `;    
+            `;
             tbody.appendChild(tr);
 
             // Tabellenkörper zu Tabelle hinzufügen
@@ -168,45 +299,207 @@ async function createTable() {
         } else {
             console.error("Fehler beim Hinzufügen:", response.statusText);
         }
-    } 
-    catch (error) {
+    } catch (error) {
         console.error("Fehler:", error);
     }
-}; 
-
-//******************************************************************
-// select member and delete member from membertable
-//******************************************************************
-// Selektierte Zeile als globale Variable speichern
-var selectedRow = null;
-
-document.getElementById("membertable").addEventListener("click", function(event) {
-    var clickedRow = event.target.parentNode; // Das TR-Element der angeklickten Zelle abrufen
-    if (clickedRow.tagName === "TR") {
-        if (selectedRow) {
-            // Wenn bereits eine Zeile ausgewählt wurde, die Markierung entfernen
-            selectedRow.classList.remove("selected");
-        }
-        // Aktuelle Zeile als ausgewählt markieren
-        selectedRow = clickedRow;
-        selectedRow.classList.add("selected");
-    }
-});
-
-const buttonDelete = document.getElementById("buttonDelete");
-buttonDelete.addEventListener("click", (event) => {
-    event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
-    deleteSelectedRow();
-});
+};
 
 function deleteSelectedRow() {
     if (selectedRow) {
-
-        
-
         selectedRow.remove(); // Die ausgewählte Zeile entfernen
         selectedRow = null; // Die Auswahl zurücksetzen
     } else {
         alert("Es wurde keine Zeile ausgewählt.");
     }
+}
+
+// group management
+async function groupManagement() {
+
+    //******************************************************************
+    // show existing grouptables
+    //******************************************************************
+    try {
+        const response = await fetch('/groups');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const groups = await response.json();
+        displayGroups(groups);
+    } 
+    catch (error) {
+        console.error('Error fetching data:', error);
+    }
+
+    //******************************************************************
+    // add group to grouptable
+    //******************************************************************
+    const buttonAdd = document.getElementById("buttonAddGroup");
+    if (!buttonAdd) {
+        console.error('Element mit der ID "buttonAddGroup" wurde nicht gefunden.');
+        return;
+    }
+
+    buttonAdd.addEventListener("click", (event) => {
+        event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
+        createGroupTable();
+    });
+}
+
+async function createGroupTable() {
+    const form = document.getElementById("groupForm");
+    if (!form) {
+        console.error('Element mit der ID "groupForm" wurde nicht gefunden.');
+        return;
+    }
+
+    const formData = new FormData(form);
+    const jsonData = {};
+
+    formData.forEach((value, key) => {
+        jsonData[key] = value;
+    });
+
+    // Formulareingaben abrufen
+    const nameInput = jsonData.name;
+    const startYearInput = jsonData.startYear;
+    const endYearInput = jsonData.endYear;
+    const genderInput = jsonData.gender;
+    const bodingerInput = jsonData.bodinger;
+
+    // Regulärer Ausdruck für eine vierstellige Jahreszahl
+    const yearRegex = /^\d{4}$/;
+    // Aktuelles Jahr ermitteln
+    const currentYear = new Date().getFullYear();
+
+    // Überprüfen, ob alle Eingabefelder ausgefüllt sind
+    if (nameInput === "" || startYearInput === "" || endYearInput === "" || genderInput === "" || bodingerInput === "") {
+        alert("Bitte füllen Sie alle Felder aus.");
+        return; // Die Funktion wird beendet, wenn nicht alle Felder ausgefüllt sind
+    } else if (!(yearRegex.test(startYearInput) && parseInt(startYearInput) <= currentYear)) {
+        alert("Bitte eine gültige Jahreszahl für das Startjahr eingeben.");
+        return;
+    } else if (!(yearRegex.test(endYearInput) && parseInt(endYearInput) <= currentYear)) {
+        alert("Bitte eine gültige Jahreszahl für das Endjahr eingeben.");
+        return;
+    } else if (parseInt(startYearInput) > parseInt(endYearInput)) {
+        alert("Das Startjahr muss kleiner als das Endjahr sein.");
+        return;
+    }
+
+    try {
+        const response = await fetch('/groups', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log("Erfolgreich hinzugefügt:", data);
+
+            // Container-Element selektieren
+            const table = document.getElementById('grouptable');
+            if (!table) {
+                throw new Error('Element mit der ID "grouptable" wurde nicht gefunden.');
+            }
+
+            // Tabellenkörper erstellen
+            const tbody = document.createElement('tbody');
+            const tr = document.createElement('tr');
+            let dataBodinger = "Nein";
+
+            if (data.bodinger == "1") 
+            {
+                dataBodinger = "Ja";
+            }
+            else
+            {
+                dataBodinger = "Nein"  ;
+            };
+
+            tr.innerHTML = `
+            <td>
+                ${data.name}
+            </td>
+            <td>
+                ${data.startYear}
+            </td>
+            <td>
+                ${data.endYear}
+            </td>
+            <td>
+                ${data.gender}
+            </td>
+            <td>
+                ${dataBodinger}
+            </td>
+            `;
+            tbody.appendChild(tr);
+
+            // Tabellenkörper zu Tabelle hinzufügen
+            table.appendChild(tbody);
+
+            // Formularfelder leeren
+            document.getElementById("name").value = "";
+            document.getElementById("startYear").value = "";
+            document.getElementById("endYear").value = "";
+            document.getElementById("gender").value = "default";
+            document.getElementById("bodinger").checked = false;
+
+        } else {
+            console.error("Fehler beim Hinzufügen:", response.statusText);
+        }
+    } catch (error) {
+        console.error("Fehler:", error);
+    }
+};
+
+function displayGroups(groups) {
+    
+    groups.forEach(group => {
+        // Container-Element selektieren
+        const table = document.getElementById('grouptable');
+        if (!table) {
+            throw new Error('Element mit der ID "grouptable" wurde nicht gefunden.');
+        }
+
+        // Tabellenkörper erstellen
+        const tbody = document.createElement('tbody');
+        const tr = document.createElement('tr');
+        let dataBodinger = "Nein";
+
+        if (group.bodinger == "1") 
+        {
+            dataBodinger = "Ja";
+        }
+        else
+        {
+            dataBodinger = "Nein"  ;
+        };
+
+        tr.innerHTML = `
+        <td>
+            ${group.name}
+        </td>
+        <td>
+            ${group.startYear}
+        </td>
+        <td>
+            ${group.endYear}
+        </td>
+        <td>
+            ${group.gender}
+        </td>
+        <td>
+            ${dataBodinger}
+        </td>
+        `;
+        tbody.appendChild(tr);
+
+        // Tabellenkörper zu Tabelle hinzufügen
+        table.appendChild(tbody);
+    });
 }
