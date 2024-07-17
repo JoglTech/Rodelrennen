@@ -45,6 +45,8 @@ app.get('/rl', (req, res) => {
 //******************************************************************
 // functions
 //******************************************************************
+
+// membertable
 app.post('/process-form', async (req, res) => {
     const member = req.body;
     const id = await sqliteManager.addMember(member);
@@ -55,6 +57,7 @@ app.post('/process-form', async (req, res) => {
       .send(member);
   });
 
+// grouptable
 app.post('/groups', async (req, res) => {
     const group = req.body;
     const id = await sqliteManager.addGroup(group);
@@ -65,16 +68,30 @@ app.post('/groups', async (req, res) => {
       .send(group);
   });
 
-  app.get('/groups', async (req, res) => {
+app.get('/groups', async (req, res) => {
     const groups = await sqliteManager.getGroups();
     groups.forEach((group) => {
       group.href = `/groups${group.id}`;
     });
     res.status(200).send(groups);
-  });
+});
 
+app.delete('/groups/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+  await sqliteManager.deleteGroup(id);
+  res.status(200).send();
+});
 
 
 const server = app.listen(PORT, () => {
     console.log(`Webservice läuft unter http://${HOST}:${PORT}`);
+});
+
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+      console.error('Port 8000 is already in use');
+      process.exit(1);
+  } else {
+      throw error;
+  }
 });

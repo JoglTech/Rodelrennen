@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Montserrat', sans-serif;
   color: rgb(0, 0, 0);
 
   background-color: #f4f4f4;
@@ -11,115 +11,146 @@ body {
   height: 100vh;
 }
 
-header {
-  background-color: #125dde;
-  padding: 30px;
-  text-align: center;
-  font-size: 35px;
-}
-
 main {
   display: flexbox;
 }
 
 article {
-  background-color: #7b9ddd;
   padding: 30px;
 }
 
 h1 {
   text-align: center;
+  color: #000000; 
+  font-family: 'Montserrat', sans-serif; 
+  font-size: 56pt; 
+  font-weight: bold;
+}
+
+h2 {
+  text-align: left;
+  padding-left: 10%;
+  color: #00CCA7; 
+  font-family: 'Montserrat', sans-serif; 
+  font-size: 16pt; 
+  font-weight: bold;
 }
 
 /* Allgemeine Formatierung der Tabelle */
 table {
+  border-collapse: separate;
+  border-spacing: 0;
   width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #ddd; /* Rand um die gesamte Tabelle */
+  padding-left: 10%;
+  padding-right: 10%;
+  text-align: center;
 }
 
-/* Header-Zellen */
+thead th,
+tbody td {
+  border-right: 2px solid #000000;
+  padding: 8px;
+}
+
+thead th:last-child,
+tbody td:last-child {
+  border-right: none;
+}
+
 th {
-  background-color: #f2f2f2; /* Hintergrundfarbe des Kopfbereichs */
-  color: #333; /* Textfarbe des Kopfbereichs */
-  font-weight: bold; /* Fettschrift für Überschriften */
-  padding: 8px; /* Innenabstand */
-  border: 1px solid #ddd; /* Rand um jede Zelle */
+  font-weight: bold;
+  font-size: 16pt;
+  padding: 8px;
+  border-bottom: 2px solid #000000;
 }
 
-/* Datenzellen */
 td {
-  padding: 8px; /* Innenabstand */
-  border: 1px solid #ddd; /* Rand um jede Zelle */
+  font-size: 12pt;
+  padding: 8px;
+  border-bottom: 1px solid #b8b8b8;
 }
-
 
 .selected {
-  background-color: #58a1f5; /* Hintergrundfarbe für ausgewählte Zeile */
+  background-color: #DAFEF7;
 }
 
 #groupForm {
-  background-color: #7b9ddd;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  color: #000000; 
+  font-family: 'Montserrat', sans-serif; 
+  font-size: 16pt; 
+  font-weight: bold;
+}
+
+#inputForms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding-left: 10%;
+  padding-right: 10%;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  flex: 1 1 100px;
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
+  width: 16%;
 }
 
-label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  text-align: left;
+.form-group input {
+  height: 28px;
+  font-size: 13pt;
+  background-color: #878787;
+  border: none;
 }
 
-input[type="text"],
-select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
+.form-group select {
+  height: 30px;
+  font-size: 13pt;
+  background-color: #878787;
+  border: none;
 }
 
-.checkbox-group {
-  display: flex;
-  align-items: left;
-  justify-content: left;
+.form-group label {
+  order: -1; /* Stellt sicher, dass das Label über dem Input steht */
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-input[type="checkbox"] {
-  position: relative;
-  width: 24px;
-  height: 24px;
+#bodinger {
+  height: 30px; /* Feste Höhe */
 }
 
-.buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+.buttonAdd {
+  padding-left: 10%;
+  padding-right: 10%;
+  text-align: right;
+  margin-top: 10px;
+}
+
+.buttonDelete {
+  padding-left: 10%;
+  padding-right: 10%;
+  text-align: right;
   margin-top: 10px;
 }
 
 button {
   padding: 10px;
-  background-color: #307fd4;
-  color: #fff;
+  background-color: #00CCA7;
+  color: #FFFFFF;
+  font-family: 'Montserrat', sans-serif; 
+  font-size: 16pt; 
+  font-weight: bold;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
   margin-top: 10px;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #00cca777;
 }
 
 button:active {
-  background-color: #003f7f;
+  background-color: #00cca754;
 }

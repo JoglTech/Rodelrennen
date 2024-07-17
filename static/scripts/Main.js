@@ -203,7 +203,7 @@ function participantProcessing() {
     if (buttonDelete) {
         buttonDelete.addEventListener("click", (event) => {
             event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
-            deleteSelectedRow();
+            deleteSelectedRow(selectedRow);
         });
     } else {
         console.error('Element mit der ID "buttonDelete" wurde nicht gefunden.');
@@ -304,7 +304,7 @@ async function createMemberTable() {
     }
 };
 
-function deleteSelectedRow() {
+function deleteSelectedRow(selectedRow) {
     if (selectedRow) {
         selectedRow.remove(); // Die ausgewählte Zeile entfernen
         selectedRow = null; // Die Auswahl zurücksetzen
@@ -314,8 +314,12 @@ function deleteSelectedRow() {
 }
 
 // group management
+
+let displayedGroupIds = [];
+
 async function groupManagement() {
 
+    displayedGroupIds = [];
     //******************************************************************
     // show existing grouptables
     //******************************************************************
@@ -344,6 +348,41 @@ async function groupManagement() {
         event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
         createGroupTable();
     });
+
+    //******************************************************************
+    // select group and delete group from grouptable
+    //******************************************************************
+
+    // Selektierte Zeile als globale Variable speichern
+    var selectedGroupRow = null;
+
+    const grouptable = document.getElementById("grouptable");
+    if (grouptable) {
+        grouptable.addEventListener("click", function (event) {
+            var clickedGroupRow = event.target.parentNode; // Das TR-Element der angeklickten Zelle abrufen
+            if ( (clickedGroupRow.tagName === "TR") && !(event.target.tagName === "TH") ) {
+                if (selectedGroupRow) {
+                    // Wenn bereits eine Zeile ausgewählt wurde, die Markierung entfernen
+                    selectedGroupRow.classList.remove("selected");
+                }
+                // Aktuelle Zeile als ausgewählt markieren
+                selectedGroupRow = clickedGroupRow;
+                selectedGroupRow.classList.add("selected");
+            }
+        });
+    } else {
+        console.error('Element mit der ID "grouptable" wurde nicht gefunden.');
+    }
+
+    const buttonDeleteGroup = document.getElementById("buttonDeleteGroup");
+    if (buttonDeleteGroup) {
+        buttonDeleteGroup.addEventListener("click", (event) => {
+            event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
+            deleteSelectedGroupRow(selectedGroupRow);
+        });
+    } else {
+        console.error('Element mit der ID "buttonDeleteGroup" wurde nicht gefunden.');
+    }
 }
 
 async function createGroupTable() {
@@ -397,50 +436,21 @@ async function createGroupTable() {
         });
 
         if (response.ok) {
-            const data = await response.json();
-            console.log("Erfolgreich hinzugefügt:", data);
+            //******************************************************************
+            // show existing grouptables
+            //******************************************************************
 
-            // Container-Element selektieren
-            const table = document.getElementById('grouptable');
-            if (!table) {
-                throw new Error('Element mit der ID "grouptable" wurde nicht gefunden.');
+            try {
+                const response = await fetch('/groups');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const groups = await response.json();
+                displayGroups(groups);
+            } 
+            catch (error) {
+                console.error('Error fetching data:', error);
             }
-
-            // Tabellenkörper erstellen
-            const tbody = document.createElement('tbody');
-            const tr = document.createElement('tr');
-            let dataBodinger = "Nein";
-
-            if (data.bodinger == "1") 
-            {
-                dataBodinger = "Ja";
-            }
-            else
-            {
-                dataBodinger = "Nein"  ;
-            };
-
-            tr.innerHTML = `
-            <td>
-                ${data.name}
-            </td>
-            <td>
-                ${data.startYear}
-            </td>
-            <td>
-                ${data.endYear}
-            </td>
-            <td>
-                ${data.gender}
-            </td>
-            <td>
-                ${dataBodinger}
-            </td>
-            `;
-            tbody.appendChild(tr);
-
-            // Tabellenkörper zu Tabelle hinzufügen
-            table.appendChild(tbody);
 
             // Formularfelder leeren
             document.getElementById("name").value = "";
@@ -458,48 +468,69 @@ async function createGroupTable() {
 };
 
 function displayGroups(groups) {
-    
+    const table = document.getElementById('grouptable');
+    if (!table) {
+        throw new Error('Element mit der ID "grouptable" wurde nicht gefunden.');
+    }
+
     groups.forEach(group => {
-        // Container-Element selektieren
-        const table = document.getElementById('grouptable');
-        if (!table) {
-            throw new Error('Element mit der ID "grouptable" wurde nicht gefunden.');
+        // Überprüfen, ob die Gruppe bereits angezeigt wird
+        if (displayedGroupIds.includes(group.id)) {
+            return; // Bereits angezeigte Gruppe überspringen
         }
 
         // Tabellenkörper erstellen
         const tbody = document.createElement('tbody');
         const tr = document.createElement('tr');
-        let dataBodinger = "Nein";
-
-        if (group.bodinger == "1") 
-        {
-            dataBodinger = "Ja";
-        }
-        else
-        {
-            dataBodinger = "Nein"  ;
-        };
+        let dataBodinger = group.bodinger == "1" ? "Ja" : "Nein";
 
         tr.innerHTML = `
-        <td>
-            ${group.name}
-        </td>
-        <td>
-            ${group.startYear}
-        </td>
-        <td>
-            ${group.endYear}
-        </td>
-        <td>
-            ${group.gender}
-        </td>
-        <td>
-            ${dataBodinger}
-        </td>
+        <td>${group.id}</td>
+        <td>${group.name}</td>
+        <td>${group.startYear}</td>
+        <td>${group.endYear}</td>
+        <td>${group.gender}</td>
+        <td>${dataBodinger}</td>
         `;
         tbody.appendChild(tr);
 
         // Tabellenkörper zu Tabelle hinzufügen
         table.appendChild(tbody);
+
+        // ID zur Liste der angezeigten Gruppen hinzufügen
+        displayedGroupIds.push(group.id);
     });
+}
+
+async function deleteSelectedGroupRow(selectedGroupRow) {
+    if (selectedGroupRow) {
+
+        const groupId = selectedGroupRow.firstElementChild.textContent;
+        console.log("Deleting group with ID:", groupId);
+
+        if (groupId) {
+            try {
+                const response = await fetch(`/groups/${groupId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    selectedGroupRow.remove(); // Die ausgewählte Zeile entfernen
+                } else {
+                    alert('Failed to delete the group.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the group.');
+            }
+        } else {
+            alert('No group ID provided.');
+        }
+        selectedGroupRow = null; // Die Auswahl zurücksetzen
+    } else {
+        alert("Es wurde keine Zeile ausgewählt.");
+    }
 }
