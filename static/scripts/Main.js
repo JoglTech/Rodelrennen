@@ -152,18 +152,35 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
 //******************************************************************
 // page specific scripts
 //******************************************************************
 
 //participant processing
-function participantProcessing() {
+let displayedMemberIds = [];
+
+async function participantProcessing() {
+
+    displayedMemberIds = [];
+    //******************************************************************
+    // show existing grouptables
+    //******************************************************************
+    try {
+        const response = await fetch('/members');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const members = await response.json();
+        displayMembers(members);
+    } 
+    catch (error) {
+        console.error('Error fetching data:', error);
+    }
 
     //******************************************************************
     // add member to membertable
     //******************************************************************
-    const buttonAdd = document.getElementById("buttonAdd");
+    const buttonAdd = document.getElementById("buttonAddMember");
     if (!buttonAdd) {
         console.error('Element mit der ID "buttonAdd" wurde nicht gefunden.');
         return;
@@ -179,31 +196,31 @@ function participantProcessing() {
     //******************************************************************
 
     // Selektierte Zeile als globale Variable speichern
-    var selectedRow = null;
+    var selectedMemberRow = null;
 
     const membertable = document.getElementById("membertable");
     if (membertable) {
         membertable.addEventListener("click", function (event) {
-            var clickedRow = event.target.parentNode; // Das TR-Element der angeklickten Zelle abrufen
-            if (clickedRow.tagName === "TR") {
-                if (selectedRow) {
+            var clickedMemberRow = event.target.parentNode; // Das TR-Element der angeklickten Zelle abrufen
+            if ( (clickedMemberRow.tagName === "TR") && !(event.target.tagName === "TH") ) {
+                if (selectedMemberRow) {
                     // Wenn bereits eine Zeile ausgewählt wurde, die Markierung entfernen
-                    selectedRow.classList.remove("selected");
+                    selectedMemberRow.classList.remove("selected");
                 }
                 // Aktuelle Zeile als ausgewählt markieren
-                selectedRow = clickedRow;
-                selectedRow.classList.add("selected");
+                selectedMemberRow = clickedMemberRow;
+                selectedMemberRow.classList.add("selected");
             }
         });
     } else {
         console.error('Element mit der ID "membertable" wurde nicht gefunden.');
     }
 
-    const buttonDelete = document.getElementById("buttonDelete");
+    const buttonDelete = document.getElementById("buttonDeleteMember");
     if (buttonDelete) {
         buttonDelete.addEventListener("click", (event) => {
             event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
-            deleteSelectedRow(selectedRow);
+            deleteSelectedMemberRow(selectedMemberRow);
         });
     } else {
         console.error('Element mit der ID "buttonDelete" wurde nicht gefunden.');
@@ -225,24 +242,33 @@ async function createMemberTable() {
     });
 
     // Formulareingaben abrufen
+    const startnbrInput = jsonData.startnbr;
     const fnameInput = jsonData.fname;
     const snameInput = jsonData.sname;
+    const clubInput = jsonData.club;
     const birthyearInput = jsonData.birthyear;
     const genderInput = jsonData.gender;
+    const bodingerInput = jsonData.bodinger;
+    const cupmemberInput = jsonData.cupmember;
 
     // Regulärer Ausdruck für Buchstaben (nur Groß- und Kleinbuchstaben)
     const lettersOnlyRegex = /^[a-zA-Z\s\-]+$/;
+    // Regulärer Ausdruck für Ziffern
+    const digitsOnlyRegex = /^\d+$/;
     // Regulärer Ausdruck für eine vierstellige Jahreszahl
     const yearRegex = /^\d{4}$/;
     // Aktuelles Jahr ermitteln
     const currentYear = new Date().getFullYear();
 
     // Überprüfen, ob alle Eingabefelder ausgefüllt sind
-    if (fnameInput === "" || snameInput === "" || birthyearInput === "" || genderInput === "") {
+    if (fnameInput === "" || snameInput === "" || birthyearInput === "" || genderInput === "" || startnbrInput === "") {
         alert("Bitte füllen Sie alle Felder aus.");
         return; // Die Funktion wird beendet, wenn nicht alle Felder ausgefüllt sind
     } else if ((!lettersOnlyRegex.test(fnameInput)) || (!lettersOnlyRegex.test(snameInput))) {
         alert("Bitte für den Namen nur Buchstaben verwenden.");
+        return;
+    } else if (!digitsOnlyRegex.test(startnbrInput)) {
+        alert("Bitte für die Startnummer nur Ziffern von 1-9 verwenden.");
         return;
     } else if (!(yearRegex.test(birthyearInput) && parseInt(birthyearInput) <= currentYear)) {
         alert("Bitte eine gültige Jahreszahl eingeben.");
@@ -250,7 +276,7 @@ async function createMemberTable() {
     }
 
     try {
-        const response = await fetch('/process-form', {
+        const response = await fetch('/members', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -259,42 +285,30 @@ async function createMemberTable() {
         });
 
         if (response.ok) {
-            const data = await response.json();
-            console.log("Erfolgreich hinzugefügt:", data);
-
-            // Container-Element selektieren
-            const table = document.getElementById('membertable');
-            if (!table) {
-                throw new Error('Element mit der ID "membertable" wurde nicht gefunden.');
+            //******************************************************************
+            // show existing grouptables
+            //******************************************************************
+            try {
+                const response = await fetch('/members');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const members = await response.json();
+                displayMembers(members);
+            } 
+            catch (error) {
+                console.error('Error fetching data:', error);
             }
 
-            // Tabellenkörper erstellen
-            const tbody = document.createElement('tbody');
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-            <td>
-                ${data.fname}
-            </td>
-            <td>
-                ${data.sname}
-            </td>
-            <td>
-                ${data.birthyear}
-            </td>
-            <td>
-                ${data.gender}
-            </td>
-            `;
-            tbody.appendChild(tr);
-
-            // Tabellenkörper zu Tabelle hinzufügen
-            table.appendChild(tbody);
-
             // Formularfelder leeren
+            document.getElementById("startnbr").value = "";
             document.getElementById("fname").value = "";
             document.getElementById("sname").value = "";
+            document.getElementById("club").value = "";
             document.getElementById("birthyear").value = "";
             document.getElementById("gender").value = "default";
+            document.getElementById("bodinger").checked = false;
+            document.getElementById("cupmember").checked = false;
 
         } else {
             console.error("Fehler beim Hinzufügen:", response.statusText);
@@ -304,17 +318,79 @@ async function createMemberTable() {
     }
 };
 
-function deleteSelectedRow(selectedRow) {
-    if (selectedRow) {
-        selectedRow.remove(); // Die ausgewählte Zeile entfernen
-        selectedRow = null; // Die Auswahl zurücksetzen
+function displayMembers(members) {
+    const table = document.getElementById('membertable');
+    if (!table) {
+        throw new Error('Element mit der ID "membertable" wurde nicht gefunden.');
+    }
+
+    members.forEach(member => {
+        // Überprüfen, ob die Gruppe bereits angezeigt wird
+        if (displayedMemberIds.includes(member.id)) {
+            return; // Bereits angezeigte Gruppe überspringen
+        }
+
+        // Tabellenkörper erstellen
+        const tbody = document.createElement('tbody');
+        const tr = document.createElement('tr');
+        let dataBodinger = member.bodinger == "1" ? "Ja" : "Nein";
+        let dataCupmember = member.cupmember == "1" ? "Ja" : "Nein";
+
+        tr.innerHTML = `
+        <td>${member.id}</td>
+        <td>${member.startnbr}</td>
+        <td>${member.fname}</td>
+        <td>${member.sname}</td>
+        <td>${member.club}</td>
+        <td>${member.birthyear}</td>
+        <td>${member.gender}</td>
+        <td>${dataBodinger}</td>
+        <td>${dataCupmember}</td>
+        `;
+        tbody.appendChild(tr);
+
+        // Tabellenkörper zu Tabelle hinzufügen
+        table.appendChild(tbody);
+
+        // ID zur Liste der angezeigten Gruppen hinzufügen
+        displayedMemberIds.push(member.id);
+    });
+}
+
+async function deleteSelectedMemberRow(selectedMemberRow) {
+    if (selectedMemberRow) {
+
+        const memberId = selectedMemberRow.firstElementChild.textContent;
+        console.log("Deleting member with ID:", memberId);
+
+        if (memberId) {
+            try {
+                const response = await fetch(`/members/${memberId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    selectedMemberRow.remove(); // Die ausgewählte Zeile entfernen
+                } else {
+                    alert('Failed to delete the member.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the member.');
+            }
+        } else {
+            alert('No group ID provided.');
+        }
+        selectedMemberRow = null; // Die Auswahl zurücksetzen
     } else {
         alert("Es wurde keine Zeile ausgewählt.");
     }
 }
 
 // group management
-
 let displayedGroupIds = [];
 
 async function groupManagement() {

@@ -11,11 +11,16 @@ module.exports = class SQLiteMemberMangager {
         db.run(`
             CREATE TABLE IF NOT EXISTS 
                 members (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    startnbr INTEGER, 
                     firstName TEXT, 
-                    lastName TEXT, 
+                    lastName TEXT,
+                    club TEXT, 
                     birthyear INTEGER,
-                    gender TEXT
+                    gender TEXT,
+                    bodinger INTEGER,
+                    cupmember INTEGER,
+                    time TEXT
                 )`
         );
         db.run(`
@@ -38,9 +43,10 @@ module.exports = class SQLiteMemberMangager {
         return new Promise((resolve, reject) => {
             db.run(
                 `INSERT
-                INTO members (firstName, lastName, birthyear, gender)
-                VALUES (?, ?, ?, ?)`,
-                [member.fname, member.sname, member.birthyear, member.gender],
+                INTO members (startnbr, firstName, lastName, club, birthyear, gender, bodinger, cupteilnehmer, time)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [member.startnbr, member.fname, member.sname, member.club, member.birthyear, member.gender, 
+                 member.bodinger, member.cupteilnehmer, member.time],
                 function(err) {
                     if (err) {
                         reject(err);
@@ -68,12 +74,18 @@ module.exports = class SQLiteMemberMangager {
         return new Promise((resolve, reject) => {
             db.run(
                 `UPDATE members SET 
+                startnbr = ?, 
                 firstName = ?, 
-                lastName = ?, 
+                lastName = ?,
+                club = ?, 
                 birthyear = ?,
-                gender = ?, 
+                gender = ?,
+                bodinger = ?,
+                cupteilnehmer = ?,
+                time = ?,
                 WHERE id = ?`,
-                [member.fname, member.sname, member.birthyear, member.gender, id],
+                [member.startnbr, member.fname, member.sname, member.club, member.birthyear, member.gender, 
+                 member.bodinger, member.cupteilnehmer, member.time, id],
                 (error, row) => {
                     if (error) {
                         reject(error);

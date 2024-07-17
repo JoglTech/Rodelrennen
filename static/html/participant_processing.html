@@ -1,50 +1,68 @@
+<link href="../styles/Main.css" type="text/css" rel="stylesheet">
 <article id="page" data-page-type="teilnehmerbearbeitung">
-    <h1>Teilnehmer Anmeldung</h1>
+    <h1>Teilnehmer</h1>
+    <h2>Eingabe</h2>
     <form id="memberForm">
-        <label for="fname">Vorname:</label>
-        <input type="text" id="fname" name="fname"><br><br>
-        <label for="sname">Nachname:</label>
-        <input type="text" id="sname" name="sname"><br><br>
-        <label for="birthyear">Geburtsjahr:</label>
-        <input type="text" id="birthyear" name="birthyear"><br><br>
-        <label for="gender">Geschlecht:</label>
-        <select id="gender" name="gender">
-            <option value=""></option>
-            <option value="männlich">männlich</option>
-            <option value="weiblich">weiblich</option>
-            <option value="divers">divers</option>
-        </select><br><br>
-        <button id="buttonAdd">Hinzufügen</button><br><br>
-        <button id="buttonDelete">Zeile löschen</button><br><br>
-    </form>
+        <div id="inputForms">
+            <div class="form-group">
+                <label for="startnbr">Startnummer</label>
+                <input type="text" id="startnbr" name="startnbr">
+            </div>
+            <div class="form-group">
+                <label for="fname">Vorname</label>
+                <input type="text" id="fname" name="fname">
+            </div>
+            <div class="form-group">
+                <label for="sname">Nachname</label>
+                <input type="text" id="sname" name="sname">
+            </div>
+            <div class="form-group">
+                <label for="club">Verein</label>
+                <input type="text" id="club" name="club">
+            </div>
+            <div class="form-group">
+                <label for="birthyear">Jahrgang</label>
+                <input type="text" id="birthyear" name="birthyear">
+            </div>
+            <div class="form-group">
+                <label for="gender">Geschlecht</label>
+                <select id="gender" name="gender">
+                    <option value=""></option>
+                    <option value="männlich">männlich</option>
+                    <option value="weiblich">weiblich</option>
+                    <option value="divers">divers</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="bodinger">Bodinger</label>
+                <input type="checkbox" id="bodinger" name="bodinger" value="1">
+            </div>
+            <div class="form-group">
+                <label for="cupmember">Cupteilnehmer</label>
+                <input type="checkbox" id="cupmember" name="cupmember" value="1">
+            </div>
+        </div>
+        <div class="buttonAdd">
+            <button id="buttonAddMember">Teilnehmer<br>hinzufügen</button>
+        </div>
+    </form><br>
+    <h2>Tabelle</h2>
     <table id="membertable">
         <thead id="membertableHead">
             <tr>
+                <th>ID</th>
+                <th>Startnummer</th>
                 <th>Vorname</th>
                 <th>Nachname</th>
-                <th>Geburtsjahr</th>
+                <th>Verein</th>
+                <th>Jahrgang</th>
                 <th>Geschlecht</th>
+                <th>Bodinger</th>
+                <th>Cupteilnehmer</th>
               </tr>
         </thead>
-    </table>
-    <h1>Auswertung der Gruppen</h1>
-    <form>
-        <label for="groupname">Gruppen Name:</label>
-        <input type="text" id="groupname" name="groupname"><br><br>
-        <label for="age1">Altersbereich der Gruppe von:</label>
-        <input type="text" id="age1" name="age1"><br><br>
-        <label for="age2">Altersbereich der Gruppe bis:</label>
-        <input type="text" id="age2" name="age2"><br><br>
-        <label for="groupgender">Geschlecht der Gruppe:</label>
-        <select id="groupgender" name="groupgender">
-            <option value=""></option>
-            <option value="männlich">männlich</option>
-            <option value="weiblich">weiblich</option>
-            <option value="divers">divers</option>
-        </select><br><br>
-        <button id="buttonAddGroup">Erstellen der Gruppe</button><br><br>
-    </form>
-    <div id="grouptables">
-
+    </table><br><br>
+    <div class="buttonDelete">
+        <button id="buttonDeleteMember">Teilnehmer<br>löschen</button>
     </div>
 </article>

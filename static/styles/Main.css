@@ -74,7 +74,7 @@ td {
   background-color: #DAFEF7;
 }
 
-#groupForm {
+#groupForm, #memberForm {
   color: #000000; 
   font-family: 'Montserrat', sans-serif; 
   font-size: 16pt; 
@@ -121,14 +121,7 @@ td {
   height: 30px; /* Feste Höhe */
 }
 
-.buttonAdd {
-  padding-left: 10%;
-  padding-right: 10%;
-  text-align: right;
-  margin-top: 10px;
-}
-
-.buttonDelete {
+.buttonAdd, .buttonDelete {
   padding-left: 10%;
   padding-right: 10%;
   text-align: right;

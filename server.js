@@ -47,15 +47,29 @@ app.get('/rl', (req, res) => {
 //******************************************************************
 
 // membertable
-app.post('/process-form', async (req, res) => {
+app.post('/members', async (req, res) => {
     const member = req.body;
     const id = await sqliteManager.addMember(member);
-    member.href = `/process-form${id}`;
+    member.href = `/members{id}`;
     res
       .status(201)
-      .location(`/process-form/${id}`)
+      .location(`/members/${id}`)
       .send(member);
+});
+
+app.get('/members', async (req, res) => {
+  const members = await sqliteManager.getMembers();
+  members.forEach((member) => {
+    member.href = `/members${member.id}`;
   });
+  res.status(200).send(members);
+});
+
+app.delete('/members/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+  await sqliteManager.deleteMember(id);
+  res.status(200).send();
+});
 
 // grouptable
 app.post('/groups', async (req, res) => {
@@ -66,7 +80,7 @@ app.post('/groups', async (req, res) => {
       .status(201)
       .location(`/groups/${id}`)
       .send(group);
-  });
+});
 
 app.get('/groups', async (req, res) => {
     const groups = await sqliteManager.getGroups();
