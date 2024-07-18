@@ -1,0 +1,54 @@
+<link href="../styles/Main.css" type="text/css" rel="stylesheet">
+<article id="page" data-page-type="zeiterfassung">
+    <h1>Zeiterfassung</h1>
+    <h2>Eingabe</h2>
+    <form id="timeForm">
+        <div id="inputForms">
+            <div class="form-group">
+                <label for="startnbr">Startnummer</label>
+                <input type="text" id="startnbr" name="startnbr">
+            </div>
+            <div class="form-readonly">
+                <label for="firstname">Vorname</label>
+                <input type="text" id="firstname" name="firstname" readonly>
+            </div>
+            <div class="form-readonly">
+                <label for="lastname">Nachname</label>
+                <input type="text" id="lastname" name="lastname" readonly>
+            </div>
+            <div class="form-readonly">
+                <label for="club">Verein</label>
+                <input type="text" id="club" name="club" readonly>
+            </div>
+            <div class="form-readonly">
+                <label for="birthyear">Jahrgang</label>
+                <input type="text" id="birthyear" name="birthyear" readonly>
+            </div>
+            <div class="form-readonly">
+                <label for="gender">Geschlecht</label>
+                <input type="text" id="gender" name="gender" readonly>
+            </div>
+            <div class="form-readonly">
+                <label for="bodinger">Bodinger</label>
+                <input type="text" id="bodinger" name="bodinger" readonly>
+            </div>
+            <div class="form-readonly">
+                <label for="cupmember">Cupteilnehmer</label>
+                <input type="text" id="cupmember" name="cupmember" readonly>
+            </div>
+            <div class="form-group">
+                <label for="time">Zeit</label>
+                <div class="time-inputs">
+                    <input type="number" id="min" name="min" min="0" step="1" placeholder="min">
+                    <span>:</span>
+                    <input type="number" id="sec" name="sec" min="0" max="59" step="1" placeholder="sec">
+                    <span>:</span>
+                    <input type="number" id="ms" name="ms" min="0" max="99" step="1" placeholder="ms">
+                </div>
+            </div>
+            <div class="form-group">
+                <button id="buttonAddTime">Zeit bestätigen</button>
+            </div>
+        </div>
+    </form>
+</article>

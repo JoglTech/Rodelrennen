@@ -31,8 +31,8 @@
 //     for (let i = 1; i < originalTable.rows.length; i++) { // Beginne bei 1, um den Header zu überspringen
 //         const row = originalTable.rows[i];
 //         const rowData = {
-//             fname: row.cells[0].innerText,
-//             sname: row.cells[1].innerText,
+//             firstname: row.cells[0].innerText,
+//             lastname: row.cells[1].innerText,
 //             birthyear: parseInt(row.cells[2].innerText),
 //             gender: row.cells[3].innerText
 //         };
@@ -133,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         console.log('Zeiterfassung Seite ist geladen.');
                         // Fügen Sie hier spezifische Logik für die Zeiterfassung-Seite hinzu
+                        timeRecording();
                     } 
                     else if (pageType === 'ergebnisliste') 
                     {
@@ -156,14 +157,14 @@ document.addEventListener('DOMContentLoaded', function() {
 // page specific scripts
 //******************************************************************
 
-//participant processing
+// participant processing
 let displayedMemberIds = [];
 
 async function participantProcessing() {
 
     displayedMemberIds = [];
     //******************************************************************
-    // show existing grouptables
+    // show existing membertables
     //******************************************************************
     try {
         const response = await fetch('/members');
@@ -243,8 +244,8 @@ async function createMemberTable() {
 
     // Formulareingaben abrufen
     const startnbrInput = jsonData.startnbr;
-    const fnameInput = jsonData.fname;
-    const snameInput = jsonData.sname;
+    const firstnameInput = jsonData.firstname;
+    const lastnameInput = jsonData.lastname;
     const clubInput = jsonData.club;
     const birthyearInput = jsonData.birthyear;
     const genderInput = jsonData.gender;
@@ -261,10 +262,10 @@ async function createMemberTable() {
     const currentYear = new Date().getFullYear();
 
     // Überprüfen, ob alle Eingabefelder ausgefüllt sind
-    if (fnameInput === "" || snameInput === "" || birthyearInput === "" || genderInput === "" || startnbrInput === "") {
+    if (firstnameInput === "" || lastnameInput === "" || birthyearInput === "" || genderInput === "" || startnbrInput === "") {
         alert("Bitte füllen Sie alle Felder aus.");
         return; // Die Funktion wird beendet, wenn nicht alle Felder ausgefüllt sind
-    } else if ((!lettersOnlyRegex.test(fnameInput)) || (!lettersOnlyRegex.test(snameInput))) {
+    } else if ((!lettersOnlyRegex.test(firstnameInput)) || (!lettersOnlyRegex.test(lastnameInput))) {
         alert("Bitte für den Namen nur Buchstaben verwenden.");
         return;
     } else if (!digitsOnlyRegex.test(startnbrInput)) {
@@ -302,8 +303,8 @@ async function createMemberTable() {
 
             // Formularfelder leeren
             document.getElementById("startnbr").value = "";
-            document.getElementById("fname").value = "";
-            document.getElementById("sname").value = "";
+            document.getElementById("firstname").value = "";
+            document.getElementById("lastname").value = "";
             document.getElementById("club").value = "";
             document.getElementById("birthyear").value = "";
             document.getElementById("gender").value = "default";
@@ -333,14 +334,14 @@ function displayMembers(members) {
         // Tabellenkörper erstellen
         const tbody = document.createElement('tbody');
         const tr = document.createElement('tr');
-        let dataBodinger = member.bodinger == "1" ? "Ja" : "Nein";
-        let dataCupmember = member.cupmember == "1" ? "Ja" : "Nein";
+        let dataBodinger = member.bodinger == "Ja" ? "Ja" : "Nein";
+        let dataCupmember = member.cupmember == "Ja" ? "Ja" : "Nein";
 
         tr.innerHTML = `
         <td>${member.id}</td>
         <td>${member.startnbr}</td>
-        <td>${member.fname}</td>
-        <td>${member.sname}</td>
+        <td>${member.firstname}</td>
+        <td>${member.lastname}</td>
         <td>${member.club}</td>
         <td>${member.birthyear}</td>
         <td>${member.gender}</td>
@@ -558,7 +559,7 @@ function displayGroups(groups) {
         // Tabellenkörper erstellen
         const tbody = document.createElement('tbody');
         const tr = document.createElement('tr');
-        let dataBodinger = group.bodinger == "1" ? "Ja" : "Nein";
+        let dataBodinger = group.bodinger == "Ja" ? "Ja" : "Nein";
 
         tr.innerHTML = `
         <td>${group.id}</td>
@@ -608,5 +609,179 @@ async function deleteSelectedGroupRow(selectedGroupRow) {
         selectedGroupRow = null; // Die Auswahl zurücksetzen
     } else {
         alert("Es wurde keine Zeile ausgewählt.");
+    }
+}
+
+// time recording
+function timeRecording() {
+
+    //******************************************************************
+    // load member values via startnbr
+    //******************************************************************
+    loadMemberValues();
+
+    //******************************************************************
+    // set time to member
+    //******************************************************************
+    const buttonAddTime = document.getElementById("buttonAddTime");
+    if (!buttonAddTime) {
+        console.error('Element mit der ID "buttonAddTime" wurde nicht gefunden.');
+        return;
+    }
+
+    buttonAddTime.addEventListener("click", (event) => {
+        event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
+        setTime();
+    });
+    
+}
+
+function loadMemberValues() {
+    const startnbrInput = document.getElementById("startnbr");
+    if (!startnbrInput) {
+        console.error('Element mit der ID "startnbr" wurde nicht gefunden.');
+        return;
+    }
+
+    const firstnameInput = document.getElementById('firstname');
+    const lastnameInput = document.getElementById('lastname');
+    const clubInput = document.getElementById('club');
+    const birthyearInput = document.getElementById('birthyear');
+    const genderInput = document.getElementById('gender');
+    const bodingerInput = document.getElementById('bodinger');
+    const cupmemberInput = document.getElementById('cupmember');
+    const minInput = document.getElementById('min');
+    const secInput = document.getElementById('sec');
+    const msInput = document.getElementById('ms');
+
+    startnbrInput.addEventListener("blur", () => {
+        const startnbr = startnbrInput.value;
+        if (startnbr) {
+            fetch(`/members/${startnbr}`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else if (response.status === 404) {
+                        throw new Error('Startnummer nicht gefunden');
+                    } else {
+                        throw new Error('Serverfehler: ' + response.status);
+                    }
+                })
+                .then(data => {
+                    // Daten in die Input-Felder einfügen
+                    firstnameInput.value = data.firstname || '';
+                    lastnameInput.value = data.lastname || '';
+                    clubInput.value = data.club || '';
+                    birthyearInput.value = data.birthyear || '';
+                    genderInput.value = data.gender || '';
+                    bodingerInput.value = data.bodinger == "Ja" ? "Ja" : "Nein";
+                    cupmemberInput.value = data.cupmember == "Ja" ? "Ja" : "Nein";
+                    minInput.value = data.min || '';
+                    secInput.value = data.sec || '';
+                    msInput.value = data.ms || '';
+
+                    firstnameInput.innerText = firstnameInput.value;
+                    lastnameInput.innerText = lastnameInput.value;
+                    clubInput.innerText = clubInput.value;
+                    birthyearInput.innerText = birthyearInput.value;
+                    genderInput.innerText = genderInput.value;
+                    bodingerInput.innerText = bodingerInput.value;
+                    cupmemberInput.innerText = cupmemberInput.value;
+                    minInput.innerText = minInput.value;
+                    secInput.innerText = secInput.value;
+                    msInput.innerText = msInput.value;
+                    
+                })
+                .catch(error => {
+                    // Fehler behandeln und anzeigen
+                    alert(error.message);
+
+                    startnbrInput.value = ''
+                    firstnameInput.value = '';
+                    lastnameInput.value = '';
+                    clubInput.value = '';
+                    birthyearInput.value = '';
+                    genderInput.value = '';
+                    bodingerInput.value = '';
+                    cupmemberInput.value = '';
+                    minInput.value = '';
+                    secInput.value = '';
+                    msInput.value = '';
+
+                    startnbrInput.innerText = startnbrInput.value;
+                    firstnameInput.innerText = firstnameInput.value;
+                    lastnameInput.innerText = lastnameInput.value;
+                    clubInput.innerText = clubInput.value;
+                    birthyearInput.innerText = birthyearInput.value;
+                    genderInput.innerText = genderInput.value;
+                    bodingerInput.innerText = bodingerInput.value;
+                    cupmemberInput.innerText = cupmemberInput.value;
+                    minInput.innerText = minInput.value;
+                    secInput.innerText = secInput.value;
+                    msInput.innerText = msInput.value;
+                });
+        }
+    });
+}
+
+async function setTime() {
+    const form = document.getElementById("timeForm");
+    if (!form) {
+        console.error('Element mit der ID "timeForm" wurde nicht gefunden.');
+        return;
+    }
+
+    const formData = new FormData(form);
+    const jsonData = {};
+
+    formData.forEach((value, key) => {
+        jsonData[key] = value;
+    });
+
+    // Formulareingaben abrufen
+    const startnbrInput = jsonData.startnbr;
+    const minInput = jsonData.min;
+    const secInput = jsonData.sec;
+    const msInput = jsonData.ms;
+
+    // Regulärer Ausdruck für eine vierstellige Jahreszahl
+    const maxTwoDigitRegEx = /^\d{1,2}$/;
+
+    // Überprüfen, ob alle Eingabefelder ausgefüllt sind
+    if (startnbrInput === "" || minInput === "" || secInput === "" || msInput === "") {
+        alert("Bitte füllen Sie alle Felder aus.");
+        return; // Die Funktion wird beendet, wenn nicht alle Felder ausgefüllt sind
+    } else if ( !maxTwoDigitRegEx.test(minInput) ) {
+        alert("Es darf nur eine 2 stellige Zahl für Minuten eingegeben werden.");
+        return;
+    } else if ( !(maxTwoDigitRegEx.test(secInput) && (secInput >= 0) && (secInput <= 59) ) ) {
+        alert("Es darf nur eine 2 stellige Zahl (0-59) für Sekunden eingegeben werden.");
+        return;
+    } else if ( !(maxTwoDigitRegEx.test(msInput) && (msInput >= 0) && (msInput <= 99) ) ) {
+        alert("Es darf nur eine 2 stellige Zahl (0-99) für Hundertstel eingegeben werden.");
+        return;
+    }
+
+    const startnbr = startnbrInput;
+
+    try {
+        const response = await fetch(`/members/${startnbr}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(jsonData),
+        });
+        
+        if (response.status === 200) {
+          alert('Zeit wurde erfolgreich aktualisiert.');
+        } else if (response.status === 201) {
+          alert('Neuer Teilnehmer erfolgreich hinzugefügt.');
+        } else {
+          alert('Ein Fehler ist aufgetreten.');
+        }
+    } catch (error) {
+        console.error('Fehler bei der Anfrage:', error);
+        alert('Ein Fehler ist aufgetreten.');
     }
 }

@@ -74,7 +74,7 @@ td {
   background-color: #DAFEF7;
 }
 
-#groupForm, #memberForm {
+#groupForm, #memberForm, #timeForm {
   color: #000000; 
   font-family: 'Montserrat', sans-serif; 
   font-size: 16pt; 
@@ -89,7 +89,7 @@ td {
   padding-right: 10%;
 }
 
-.form-group {
+.form-group, .form-readonly {
   flex: 1 1 100px;
   display: flex;
   flex-direction: column;
@@ -97,11 +97,19 @@ td {
   width: 16%;
 }
 
-.form-group input {
+.form-group input, .time-input-container input {
   height: 28px;
   font-size: 13pt;
   background-color: #878787;
   border: none;
+}
+
+.form-readonly input {
+  height: 28px;
+  font-size: 13pt;
+  background-color: #F4F4F4;
+  border: none;
+  cursor: default;
 }
 
 .form-group select {
@@ -111,10 +119,14 @@ td {
   border: none;
 }
 
-.form-group label {
+.form-group label, .form-readonly label {
   order: -1; /* Stellt sicher, dass das Label über dem Input steht */
   text-align: center;
   margin-bottom: 20px;
+}
+
+.form-readonly input[readonly]:focus {
+  outline: none;
 }
 
 #bodinger {
@@ -146,4 +158,20 @@ button:hover {
 
 button:active {
   background-color: #00cca754;
+}
+
+.time-inputs {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 13pt;
+}
+
+.time-inputs input {
+  width: 33%;
+  text-align: center;
+}
+
+.time-inputs span {
+  margin: 0 5px;
 }

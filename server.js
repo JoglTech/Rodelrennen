@@ -71,6 +71,34 @@ app.delete('/members/:id', async (req, res) => {
   res.status(200).send();
 });
 
+app.get('/members/:startnbr', async (req, res) => {
+  const startnbr = parseInt(req.params.startnbr);
+  const member = await sqliteManager.getMember(startnbr);
+  if (member) {
+    res.status(200).send(member);
+  } else {
+    res.status(404).send();
+  }
+});
+
+app.put('/members/:startnbr', async (req, res) => {
+  const startnbr = parseInt(req.params.startnbr);
+  const existingMember = await sqliteManager.getMember(startnbr);
+  if (existingMember) {
+    const member = req.body;
+    await sqliteManager.updateMember(startnbr, member);
+    res.status(200).send();
+  } else {
+    const member = req.body;
+    const id = await sqliteManager.addMember(member);
+    res
+      .status(201)
+      .location(`/members/${id}`)
+      .send();
+  }
+});
+
+
 // grouptable
 app.post('/groups', async (req, res) => {
     const group = req.body;

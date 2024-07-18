@@ -13,14 +13,16 @@ module.exports = class SQLiteMemberMangager {
                 members (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     startnbr INTEGER, 
-                    firstName TEXT, 
-                    lastName TEXT,
+                    firstname TEXT, 
+                    lastname TEXT,
                     club TEXT, 
                     birthyear INTEGER,
                     gender TEXT,
-                    bodinger INTEGER,
-                    cupmember INTEGER,
-                    time TEXT
+                    bodinger TEXT,
+                    cupmember TEXT,
+                    min INTEGER,
+                    sec INTEGER,
+                    ms INTEGER
                 )`
         );
         db.run(`
@@ -31,7 +33,7 @@ module.exports = class SQLiteMemberMangager {
                     startYear INTEGER, 
                     endYear INTEGER,
                     gender TEXT,
-                    bodinger INTEGER
+                    bodinger TEXT
                 )`
         );
     }
@@ -43,10 +45,10 @@ module.exports = class SQLiteMemberMangager {
         return new Promise((resolve, reject) => {
             db.run(
                 `INSERT
-                INTO members (startnbr, firstName, lastName, club, birthyear, gender, bodinger, cupteilnehmer, time)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [member.startnbr, member.fname, member.sname, member.club, member.birthyear, member.gender, 
-                 member.bodinger, member.cupteilnehmer, member.time],
+                INTO members (startnbr, firstname, lastname, club, birthyear, gender, bodinger, cupmember, min, sec, ms)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [member.startnbr, member.firstname, member.lastname, member.club, member.birthyear, member.gender, 
+                 member.bodinger, member.cupmember, member.min, member.sec, member.ms],
                 function(err) {
                     if (err) {
                         reject(err);
@@ -58,9 +60,9 @@ module.exports = class SQLiteMemberMangager {
         });
     }
 
-    async getMember(id) {
+    async getMember(startnbr) {
         return new Promise((resolve, reject) => {
-            db.get("SELECT * FROM members WHERE id = ?", [id], (error, row) => {
+            db.get("SELECT * FROM members WHERE startnbr = ?", [startnbr], (error, row) => {
                 if (error) {
                     reject(error);
                 } else {
@@ -70,22 +72,23 @@ module.exports = class SQLiteMemberMangager {
         });
     }
 
-    async updateMember(id, member) {
+    async updateMember(startnbr, member) {
         return new Promise((resolve, reject) => {
             db.run(
-                `UPDATE members SET 
-                startnbr = ?, 
+                `UPDATE members SET
                 firstName = ?, 
                 lastName = ?,
                 club = ?, 
                 birthyear = ?,
                 gender = ?,
                 bodinger = ?,
-                cupteilnehmer = ?,
-                time = ?,
-                WHERE id = ?`,
-                [member.startnbr, member.fname, member.sname, member.club, member.birthyear, member.gender, 
-                 member.bodinger, member.cupteilnehmer, member.time, id],
+                cupmember = ?,
+                min = ?,
+                sec = ?,
+                ms = ?
+                WHERE startnbr = ?`,
+                [member.firstname, member.lastname, member.club, member.birthyear, member.gender, 
+                 member.bodinger, member.cupmember, member.min, member.sec, member.ms, startnbr],
                 (error, row) => {
                     if (error) {
                         reject(error);
