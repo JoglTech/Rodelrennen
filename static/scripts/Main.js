@@ -1,78 +1,3 @@
-
-
-// const buttonAddGroup = document.getElementById("buttonAddGroup");
-
-// buttonAddGroup.addEventListener("click", (event) => {
-//     event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
-//     createGroupTable();
-// });
-
-// function createGroupTable() {
-
-//     // Formulareingaben abrufen
-//     const groupNameInput = document.getElementById("groupname").value;
-//     const groupAge1Input = document.getElementById("age1").value;
-//     const groupAge2Input = document.getElementById("age2").value;
-//     const groupGenderInput = document.getElementById("groupgender").value;
-
-//     // Überprüfen, ob alle Eingabefelder ausgefüllt sind
-//     if (groupNameInput === "" || groupAge1Input === "" || groupAge2Input === "" || groupGenderInput === "") {
-//         alert("Bitte füllen Sie alle Felder der Gruppen Auswertung aus.");
-//         return;
-//     }
-
-//     // Originaltabelle und Zieldokument für die neue Tabelle abrufen
-//     const originalTable = document.getElementById("membertable");
-//     const originalTableHead = document.getElementById("membertableHead");
-//     const newTableBody = document.createElement("tbody");
-
-//     // Durch jede Zeile der Originaltabelle iterieren
-//     let hasParticipants = false; // Variable, um zu überprüfen, ob Teilnehmer gefunden wurden
-//     for (let i = 1; i < originalTable.rows.length; i++) { // Beginne bei 1, um den Header zu überspringen
-//         const row = originalTable.rows[i];
-//         const rowData = {
-//             firstname: row.cells[0].innerText,
-//             lastname: row.cells[1].innerText,
-//             birthyear: parseInt(row.cells[2].innerText),
-//             gender: row.cells[3].innerText
-//         };
-
-//         // Überprüfen, ob die Zeile den Kriterien entspricht
-//         if ((rowData.birthyear >= parseInt(groupAge1Input)) && (rowData.birthyear <= parseInt(groupAge2Input)) && rowData.gender === groupGenderInput) {
-//             hasParticipants = true; // Teilnehmer gefunden
-//             const newRow = newTableBody.insertRow();
-//             for (const [key, value] of Object.entries(rowData)) {
-//                 const cell = newRow.insertCell();
-//                 cell.innerText = value;
-//             }
-//         }
-//     }
-
-//     // Überprüfen, ob Teilnehmer gefunden wurden
-//     if (hasParticipants) {
-//         // Neue Tabelle erstellen und anzeigen
-//         const newTable = document.createElement("table");
-//         newTable.appendChild(originalTableHead.cloneNode(true)); // Kopiere den Tabellenkopf
-//         newTable.appendChild(newTableBody);
-
-//         // Überschrift erstellen
-//         const heading = document.createElement("h2");
-//         heading.textContent = groupNameInput;
-
-//         const groupTableDiv = document.getElementById("grouptables");
-//         groupTableDiv.appendChild(heading);
-//         groupTableDiv.appendChild(newTable); // Füge die neue Tabelle dem Div-Element hinzu
-
-//     } else {
-//         alert("Es sind keine Teilnehmer die den Kategorien entsprechen angemeldet");
-//     }
-// }
-
-
-////////////////////////////////////////////////////////////////////
-// New Code Main.js
-////////////////////////////////////////////////////////////////////
-
 //******************************************************************
 // load correct page from link
 //******************************************************************
@@ -139,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         console.log('Ergebnisliste Seite ist geladen.');
                         // Fügen Sie hier spezifische Logik für die Ergebnisliste-Seite hinzu
+                        resultList();
                     } 
                     else 
                     {
@@ -275,6 +201,9 @@ async function createMemberTable() {
         alert("Bitte eine gültige Jahreszahl eingeben.");
         return;
     }
+
+    jsonData.bodinger = jsonData.bodinger == "Ja" ? "Ja" : "Nein";
+    jsonData.cupmember = jsonData.cupmember == "Ja" ? "Ja" : "Nein";
 
     try {
         const response = await fetch('/members', {
@@ -502,6 +431,8 @@ async function createGroupTable() {
         alert("Das Startjahr muss kleiner als das Endjahr sein.");
         return;
     }
+
+    jsonData.bodinger = jsonData.bodinger == "Ja" ? "Ja" : "Nein";
 
     try {
         const response = await fetch('/groups', {
@@ -784,4 +715,105 @@ async function setTime() {
         console.error('Fehler bei der Anfrage:', error);
         alert('Ein Fehler ist aufgetreten.');
     }
+}
+
+// result list
+async function resultList() {
+    //******************************************************************
+    // load groups
+    //******************************************************************
+    try {
+        const response = await fetch('/groups');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const groups = await response.json();
+        loadResults(groups);
+    } 
+    catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+async function loadResults(groups) {
+    const results = document.getElementById('results');
+    if (!results) {
+        throw new Error('Element mit der ID "results" wurde nicht gefunden.');
+    }
+
+    try {
+        const response = await fetch('/members');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const members = await response.json();
+
+        // Mitglieder nach Zeit sortieren
+        const sortedMembers = members.slice().sort((a, b) => {
+            return getTotalMilliseconds(a) - getTotalMilliseconds(b);
+        });
+
+        // Ergebnis anzeigen
+        console.log(sortedMembers);
+
+        groups.forEach(group => {
+            // Liste erstellen
+            const h2 = document.createElement('h2');
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const trHead = document.createElement('tr');
+            const tbody = document.createElement('tbody');
+
+            h2.innerText = group.name;
+            trHead.innerHTML = `
+                <th>Platzierung</th>
+                <th>Startnummer</th>
+                <th>Vorname</th>
+                <th>Nachname</th>
+                <th>Verein</th>
+                <th>Jahrgang</th>
+                <th>Cupteilnehmer</th>
+                <th>Zeit</th>
+                `;
+
+            let placement = 1;
+
+            sortedMembers.forEach(sortedMember => {
+                if ( (sortedMember.birthyear >= group.startYear) && (sortedMember.birthyear <= group.endYear) && 
+                     (sortedMember.bodinger === group.bodinger) && (sortedMember.gender === group.gender) )
+                {
+                    const trBody = document.createElement('tr');
+                    trBody.innerHTML = `
+                        <td>${placement}.</td>
+                        <td>${sortedMember.startnbr}</td>
+                        <td>${sortedMember.firstname}</td>
+                        <td>${sortedMember.lastname}</td>
+                        <td>${sortedMember.club}</td>
+                        <td>${sortedMember.birthyear}</td>
+                        <td>${sortedMember.cupmember}</td>
+                        <td>${sortedMember.min}:${sortedMember.sec > 9 ? sortedMember.sec : '0' + sortedMember.sec}:${sortedMember.ms > 9 ? sortedMember.ms : '0' + sortedMember.ms}</td>
+                        `;
+                    tbody.appendChild(trBody);
+                    placement++;
+                }
+            });
+            
+            thead.appendChild(trHead);
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            results.appendChild(h2);
+            results.appendChild(table);
+        });
+    } 
+    catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+function getTotalMilliseconds(member) {
+    return member.min * 60 * 1000 + member.sec * 1000 + member.ms * 10;
+}
+
+function drucken() {
+    window.print();
 }

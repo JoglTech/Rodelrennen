@@ -175,3 +175,30 @@ button:active {
 .time-inputs span {
   margin: 0 5px;
 }
+
+@media print {
+  /* Blendet alle Elemente außer dem <article> aus */
+  body * {
+      visibility: hidden;
+  }
+  article, article * {
+      visibility: visible;
+  }
+  /* Stellt sicher, dass nur der <article> angezeigt wird */
+  @page {
+      margin: 0;
+  }
+  article {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* Verkleinert die Breite des Druckbereichs */
+    height: auto;
+    margin: auto; /* Zentriert das Artikel */
+    padding: 1cm; /* Optional: Innenabstände für besseren Druck */
+    box-sizing: border-box;
+    transform: scale(0.6); /* Skalierung für kleinere Darstellung */
+    transform-origin: top left;
+  }
+}
