@@ -4,27 +4,27 @@
     <h2>Eingabe</h2>
     <form id="memberForm">
         <div id="inputForms">
-            <div class="form-group">
+            <div class="form-group-pp">
                 <label for="startnbr">Startnummer</label>
                 <input type="text" id="startnbr" name="startnbr">
             </div>
-            <div class="form-group">
+            <div class="form-group-pp">
                 <label for="firstname">Vorname</label>
                 <input type="text" id="firstname" name="firstname">
             </div>
-            <div class="form-group">
+            <div class="form-group-pp">
                 <label for="lastname">Nachname</label>
                 <input type="text" id="lastname" name="lastname">
             </div>
-            <div class="form-group">
+            <div class="form-group-pp">
                 <label for="club">Verein</label>
                 <input type="text" id="club" name="club">
             </div>
-            <div class="form-group">
+            <div class="form-group-pp">
                 <label for="birthyear">Jahrgang</label>
                 <input type="text" id="birthyear" name="birthyear">
             </div>
-            <div class="form-group">
+            <div class="form-group-pp">
                 <label for="gender">Geschlecht</label>
                 <select id="gender" name="gender">
                     <option value=""></option>
@@ -33,24 +33,23 @@
                     <option value="divers">divers</option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-group-pp">
                 <label for="bodinger">Bodinger</label>
                 <input type="checkbox" id="bodinger" name="bodinger" value="Ja">
             </div>
-            <div class="form-group">
+            <div class="form-group-pp">
                 <label for="cupmember">Cupteilnehmer</label>
                 <input type="checkbox" id="cupmember" name="cupmember" value="Ja">
             </div>
-        </div>
+        </div><br>
         <div class="buttonAdd">
-            <button id="buttonAddMember">Teilnehmer<br>hinzufügen</button>
+            <button id="buttonAddMember">Teilnehmer hinzufügen</button>
         </div>
     </form><br>
     <h2>Tabelle</h2>
     <table id="membertable">
         <thead id="membertableHead">
             <tr>
-                <th>ID</th>
                 <th>Startnummer</th>
                 <th>Vorname</th>
                 <th>Nachname</th>
@@ -63,6 +62,6 @@
         </thead>
     </table><br><br>
     <div class="buttonDelete">
-        <button id="buttonDeleteMember">Teilnehmer<br>löschen</button>
+        <button id="buttonDeleteMember">Teilnehmer löschen</button>
     </div>
 </article>

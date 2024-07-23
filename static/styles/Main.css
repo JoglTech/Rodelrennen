@@ -30,7 +30,7 @@ h1 {
 h2 {
   text-align: left;
   padding-left: 10%;
-  color: #00CCA7; 
+  color: #007BFF; 
   font-family: 'Montserrat', sans-serif; 
   font-size: 16pt; 
   font-weight: bold;
@@ -67,14 +67,14 @@ th {
 td {
   font-size: 12pt;
   padding: 8px;
-  border-bottom: 1px solid #b8b8b8;
+  border-bottom: 1px solid #bbbbbb;
 }
 
 .selected {
-  background-color: #DAFEF7;
+  background-color: #007bff3d;
 }
 
-#groupForm, #memberForm, #timeForm {
+#groupForm, #memberForm, #timeForm, #resultForm {
   color: #000000; 
   font-family: 'Montserrat', sans-serif; 
   font-size: 16pt; 
@@ -97,29 +97,36 @@ td {
   width: 16%;
 }
 
-.form-group input, .time-input-container input {
-  height: 28px;
+.form-group-pp {
+  flex: 1 1 calc(25% - 20px);
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.form-group input, .form-group-pp input, .time-input-container input {
+  height: 32px;
   font-size: 13pt;
-  background-color: #878787;
+  background-color: #bbbbbb;
   border: none;
 }
 
 .form-readonly input {
-  height: 28px;
+  height: 32px;
   font-size: 13pt;
   background-color: #F4F4F4;
   border: none;
   cursor: default;
 }
 
-.form-group select {
-  height: 30px;
+.form-group select, .form-group-pp select {
+  height: 34px;
   font-size: 13pt;
-  background-color: #878787;
+  background-color: #bbbbbb;
   border: none;
 }
 
-.form-group label, .form-readonly label {
+.form-group label, .form-group-pp label, .form-readonly label {
   order: -1; /* Stellt sicher, dass das Label über dem Input steht */
   text-align: center;
   margin-bottom: 20px;
@@ -129,35 +136,44 @@ td {
   outline: none;
 }
 
-#bodinger {
-  height: 30px; /* Feste Höhe */
-}
-
-.buttonAdd, .buttonDelete {
+.buttonAdd, .buttonDelete, .buttonPrint {
   padding-left: 10%;
   padding-right: 10%;
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  width: 80%;
   margin-top: 10px;
+}
+
+#buttonAddGroup, #buttonDeleteGroup {
+  width: 19%;
+}
+
+#buttonAddMember, #buttonDeleteMember {
+  width: 24%;
+}
+
+#buttonAddTime {
+  margin-top: 28px;
 }
 
 button {
   padding: 10px;
-  background-color: #00CCA7;
+  background-color: #007BFF;
   color: #FFFFFF;
   font-family: 'Montserrat', sans-serif; 
   font-size: 16pt; 
   font-weight: bold;
   border: none;
   cursor: pointer;
-  margin-top: 10px;
 }
 
 button:hover {
-  background-color: #00cca777;
+  background-color: #3462cf;
 }
 
 button:active {
-  background-color: #00cca754;
+  background-color: #007bffc0;
 }
 
 .time-inputs {
@@ -184,6 +200,12 @@ button:active {
   article, article * {
       visibility: visible;
   }
+
+  /* Verhindert das Drucken von divs mit der Klasse buttonPrint */
+  .buttonPrint {
+    display: none;
+  }
+
   /* Stellt sicher, dass nur der <article> angezeigt wird */
   @page {
       margin: 0;
@@ -191,7 +213,7 @@ button:active {
   article {
     display: block;
     position: absolute;
-    top: 0;
+    top: 5%;
     left: 0;
     width: 100%; /* Verkleinert die Breite des Druckbereichs */
     height: auto;
@@ -200,5 +222,11 @@ button:active {
     box-sizing: border-box;
     transform: scale(0.6); /* Skalierung für kleinere Darstellung */
     transform-origin: top left;
+  }
+  
+  h1 {
+    position: absolute;
+    left: 56%;
+    bottom: 90%;
   }
 }

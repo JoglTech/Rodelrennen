@@ -49,25 +49,25 @@ app.get('/rl', (req, res) => {
 // membertable
 app.post('/members', async (req, res) => {
     const member = req.body;
-    const id = await sqliteManager.addMember(member);
-    member.href = `/members{id}`;
+    const startnbr = await sqliteManager.addMember(member);
+    member.href = `/members{startnbr}`;
     res
       .status(201)
-      .location(`/members/${id}`)
+      .location(`/members/${startnbr}`)
       .send(member);
 });
 
 app.get('/members', async (req, res) => {
   const members = await sqliteManager.getMembers();
   members.forEach((member) => {
-    member.href = `/members${member.id}`;
+    member.href = `/members${member.startnbr}`;
   });
   res.status(200).send(members);
 });
 
-app.delete('/members/:id', async (req, res) => {
-  const id = parseInt(req.params.id);
-  await sqliteManager.deleteMember(id);
+app.delete('/members/:startnbr', async (req, res) => {
+  const startnbr = parseInt(req.params.startnbr);
+  await sqliteManager.deleteMember(startnbr);
   res.status(200).send();
 });
 
@@ -90,10 +90,10 @@ app.put('/members/:startnbr', async (req, res) => {
     res.status(200).send();
   } else {
     const member = req.body;
-    const id = await sqliteManager.addMember(member);
+    const startnbr = await sqliteManager.addMember(member);
     res
       .status(201)
-      .location(`/members/${id}`)
+      .location(`/members/${startnbr}`)
       .send();
   }
 });

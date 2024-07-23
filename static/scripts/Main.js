@@ -84,11 +84,11 @@ document.addEventListener('DOMContentLoaded', function() {
 //******************************************************************
 
 // participant processing
-let displayedMemberIds = [];
+let displayedMemberStartNbrs = [];
 
 async function participantProcessing() {
 
-    displayedMemberIds = [];
+    displayedMemberStartNbrs = [];
     //******************************************************************
     // show existing membertables
     //******************************************************************
@@ -188,7 +188,11 @@ async function createMemberTable() {
     const currentYear = new Date().getFullYear();
 
     // Überprüfen, ob alle Eingabefelder ausgefüllt sind
-    if (firstnameInput === "" || lastnameInput === "" || birthyearInput === "" || genderInput === "" || startnbrInput === "") {
+    // Überprüfen, ob die Gruppe bereits angezeigt wird
+    if (displayedMemberStartNbrs.includes(parseInt(startnbrInput))) {
+        alert("Startnummer ist bereits vergeben!")
+        return; // Bereits angezeigte Gruppe überspringen
+    } else if (firstnameInput === "" || lastnameInput === "" || birthyearInput === "" || genderInput === "" || startnbrInput === "") {
         alert("Bitte füllen Sie alle Felder aus.");
         return; // Die Funktion wird beendet, wenn nicht alle Felder ausgefüllt sind
     } else if ((!lettersOnlyRegex.test(firstnameInput)) || (!lettersOnlyRegex.test(lastnameInput))) {
@@ -256,7 +260,7 @@ function displayMembers(members) {
 
     members.forEach(member => {
         // Überprüfen, ob die Gruppe bereits angezeigt wird
-        if (displayedMemberIds.includes(member.id)) {
+        if (displayedMemberStartNbrs.includes(member.startnbr)) {
             return; // Bereits angezeigte Gruppe überspringen
         }
 
@@ -267,7 +271,6 @@ function displayMembers(members) {
         let dataCupmember = member.cupmember == "Ja" ? "Ja" : "Nein";
 
         tr.innerHTML = `
-        <td>${member.id}</td>
         <td>${member.startnbr}</td>
         <td>${member.firstname}</td>
         <td>${member.lastname}</td>
@@ -283,19 +286,19 @@ function displayMembers(members) {
         table.appendChild(tbody);
 
         // ID zur Liste der angezeigten Gruppen hinzufügen
-        displayedMemberIds.push(member.id);
+        displayedMemberStartNbrs.push(member.startnbr);
     });
 }
 
 async function deleteSelectedMemberRow(selectedMemberRow) {
     if (selectedMemberRow) {
 
-        const memberId = selectedMemberRow.firstElementChild.textContent;
-        console.log("Deleting member with ID:", memberId);
+        const memberStartnbr = selectedMemberRow.firstElementChild.textContent;
+        console.log("Deleting member with ID:", memberStartnbr);
 
-        if (memberId) {
+        if (memberStartnbr) {
             try {
-                const response = await fetch(`/members/${memberId}`, {
+                const response = await fetch(`/members/${memberStartnbr}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'

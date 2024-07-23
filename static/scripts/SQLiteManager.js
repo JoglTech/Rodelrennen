@@ -11,8 +11,7 @@ module.exports = class SQLiteMemberMangager {
         db.run(`
             CREATE TABLE IF NOT EXISTS 
                 members (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    startnbr INTEGER, 
+                    startnbr INTEGER PRIMARY KEY, 
                     firstname TEXT, 
                     lastname TEXT,
                     club TEXT, 
@@ -100,9 +99,9 @@ module.exports = class SQLiteMemberMangager {
         });
     }
 
-    async deleteMember(id) {
+    async deleteMember(startnbr) {
         return new Promise((resolve, reject) => {
-            db.run("DELETE FROM members WHERE id = ?", [id], (error, row) => {
+            db.run("DELETE FROM members WHERE startnbr = ?", [startnbr], (error, row) => {
                 if (error) {
                     reject(error);
                 } else {
