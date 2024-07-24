@@ -36,6 +36,45 @@ h2 {
   font-weight: bold;
 }
 
+.startImg {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Vollbild-Höhe, du kannst dies anpassen */
+  background: url('../img/rodelrennen_neu.jpeg') no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Setze das Bild auf volle Breite */
+.startImg img {
+  width: 100%;
+  height: auto; /* Behält das Seitenverhältnis bei */
+  display: block; /* Entfernt die kleinen Lücken unter Bildern */
+}
+
+.startImg h1 {
+  position: relative;
+  text-align: center;
+  height: 80%;
+  color: #000000; 
+  font-family: 'Montserrat', sans-serif; 
+  font-size: 56pt; 
+  font-weight: bold;
+}
+
+/* .startImg h3 {
+  position: relative;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif; 
+  font-weight: bold;
+} */
+
+.blue-text {
+  color: #007BFF; 
+}
+
 /* Allgemeine Formatierung der Tabelle */
 table {
   border-collapse: separate;

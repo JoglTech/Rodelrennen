@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const pageType = pageContent.getAttribute('data-page-type');
                     
                     // Hier können Sie den Typ der Seite überprüfen und entsprechenden Code ausführen
-                    if (pageType === 'gruppenverwaltung') 
+                   if (pageType === 'gruppenverwaltung') 
                     {
                         console.log('Gruppenverwaltung Seite ist geladen.');
                         // Fügen Sie hier spezifische Logik für die Gruppenverwaltung-Seite hinzu
