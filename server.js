@@ -98,7 +98,6 @@ app.put('/members/:startnbr', async (req, res) => {
   }
 });
 
-
 // grouptable
 app.post('/groups', async (req, res) => {
     const group = req.body;
@@ -124,7 +123,7 @@ app.delete('/groups/:id', async (req, res) => {
   res.status(200).send();
 });
 
-
+// listen
 const server = app.listen(PORT, () => {
     console.log(`Webservice läuft unter http://${HOST}:${PORT}`);
 });

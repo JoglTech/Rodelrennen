@@ -2,74 +2,72 @@
 // load correct page from link
 //******************************************************************
 document.addEventListener('DOMContentLoaded', function() {
-    // Finde alle Links mit der Klasse "mdl-navigation__link"
+    // select all links with class "mdl-navigation__link"
     const links = document.querySelectorAll('.mdl-navigation__link');
 
-    if (links.length === 0) {
+    if (links.length === 0) 
+    {
         console.error('Keine Links mit der Klasse "mdl-navigation__link" gefunden.');
         return;
     }
 
     links.forEach(link => {
         link.addEventListener('click', function(event) {
-            event.preventDefault(); // Verhindert das Standardverhalten des Links
+            event.preventDefault();
 
-            // Die URL, die geladen werden soll
             const url = this.href;
 
-            // Fetch API verwenden, um den Inhalt zu laden
+            // use Fetch API to load content
             fetch(url)
                 .then(response => {
-                    if (!response.ok) {
+                    if (!response.ok) 
+                    {
                         throw new Error('Netzwerk-Antwort war nicht ok');
                     }
                     return response.text();
                 })
                 .then(data => {
                     const contentDiv = document.getElementById('page-content');
-                    if (!contentDiv) {
+                    if (!contentDiv) 
+                    {
                         throw new Error('Element mit der ID "page-content" wurde nicht gefunden.');
                     }
-                    // Den neuen Inhalt in das DIV mit der ID "page-content" einfügen
+                    // put new content into DIV with ID: 'page-content'
                     contentDiv.innerHTML = data;
 
                     const pageContent = document.getElementById('page');
-                    if (!pageContent) {
+                    if (!pageContent) 
+                    {
                         console.error('Element mit der ID "page" wurde nicht gefunden.');
                         return;
                     }
 
                     const pageType = pageContent.getAttribute('data-page-type');
                     
-                    // Hier können Sie den Typ der Seite überprüfen und entsprechenden Code ausführen
+                    // check the page type and run the corresponding code
                    if (pageType === 'gruppenverwaltung') 
                     {
                         console.log('Gruppenverwaltung Seite ist geladen.');
-                        // Fügen Sie hier spezifische Logik für die Gruppenverwaltung-Seite hinzu
                         groupManagement();
                     } 
                     else if (pageType === 'teilnehmerbearbeitung') 
                     {
                         console.log('Teilnehmerbearbeitung Seite ist geladen.');
-                        // Fügen Sie hier spezifische Logik für die Teilnehmerbearbeitung-Seite hinzu
                         participantProcessing();
                     } 
                     else if (pageType === 'zeiterfassung') 
                     {
                         console.log('Zeiterfassung Seite ist geladen.');
-                        // Fügen Sie hier spezifische Logik für die Zeiterfassung-Seite hinzu
                         timeRecording();
                     } 
                     else if (pageType === 'ergebnisliste') 
                     {
                         console.log('Ergebnisliste Seite ist geladen.');
-                        // Fügen Sie hier spezifische Logik für die Ergebnisliste-Seite hinzu
                         resultList();
                     } 
                     else 
                     {
                         console.log('Unbekannte Seite ist geladen.');
-                        // Fügen Sie hier eine Standardaktion für unbekannte Seiten hinzu, falls benötigt
                     }
                 })
                 .catch(error => {
@@ -94,7 +92,8 @@ async function participantProcessing() {
     //******************************************************************
     try {
         const response = await fetch('/members');
-        if (!response.ok) {
+        if (!response.ok) 
+        {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const members = await response.json();
@@ -108,55 +107,63 @@ async function participantProcessing() {
     // add member to membertable
     //******************************************************************
     const buttonAdd = document.getElementById("buttonAddMember");
-    if (!buttonAdd) {
+    if (!buttonAdd) 
+    {
         console.error('Element mit der ID "buttonAdd" wurde nicht gefunden.');
         return;
     }
 
     buttonAdd.addEventListener("click", (event) => {
-        event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
+        event.preventDefault();
         createMemberTable();
     });
 
     //******************************************************************
     // select member and delete member from membertable
     //******************************************************************
-
-    // Selektierte Zeile als globale Variable speichern
     var selectedMemberRow = null;
 
     const membertable = document.getElementById("membertable");
-    if (membertable) {
+    if (membertable) 
+    {
         membertable.addEventListener("click", function (event) {
-            var clickedMemberRow = event.target.parentNode; // Das TR-Element der angeklickten Zelle abrufen
-            if ( (clickedMemberRow.tagName === "TR") && !(event.target.tagName === "TH") ) {
-                if (selectedMemberRow) {
-                    // Wenn bereits eine Zeile ausgewählt wurde, die Markierung entfernen
+            var clickedMemberRow = event.target.parentNode;
+            if ( (clickedMemberRow.tagName === "TR") && !(event.target.tagName === "TH") ) 
+            {
+                if (selectedMemberRow) 
+                {
+                    // remove selection if a line has already been selected
                     selectedMemberRow.classList.remove("selected");
                 }
-                // Aktuelle Zeile als ausgewählt markieren
+                // mark current line as selected
                 selectedMemberRow = clickedMemberRow;
                 selectedMemberRow.classList.add("selected");
             }
         });
-    } else {
+    } 
+    else 
+    {
         console.error('Element mit der ID "membertable" wurde nicht gefunden.');
     }
 
     const buttonDelete = document.getElementById("buttonDeleteMember");
-    if (buttonDelete) {
+    if (buttonDelete) 
+    {
         buttonDelete.addEventListener("click", (event) => {
             event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
             deleteSelectedMemberRow(selectedMemberRow);
         });
-    } else {
+    } 
+    else 
+    {
         console.error('Element mit der ID "buttonDelete" wurde nicht gefunden.');
     }
 }
 
 async function createMemberTable() {
     const form = document.getElementById("memberForm");
-    if (!form) {
+    if (!form) 
+    {
         console.error('Element mit der ID "memberForm" wurde nicht gefunden.');
         return;
     }
@@ -189,19 +196,28 @@ async function createMemberTable() {
 
     // Überprüfen, ob alle Eingabefelder ausgefüllt sind
     // Überprüfen, ob die Gruppe bereits angezeigt wird
-    if (displayedMemberStartNbrs.includes(parseInt(startnbrInput))) {
+    if (displayedMemberStartNbrs.includes(parseInt(startnbrInput))) 
+    {
         alert("Startnummer ist bereits vergeben!")
         return; // Bereits angezeigte Gruppe überspringen
-    } else if (firstnameInput === "" || lastnameInput === "" || birthyearInput === "" || genderInput === "" || startnbrInput === "") {
+    } 
+    else if (firstnameInput === "" || lastnameInput === "" || birthyearInput === "" || genderInput === "" || startnbrInput === "") 
+    {
         alert("Bitte füllen Sie alle Felder aus.");
         return; // Die Funktion wird beendet, wenn nicht alle Felder ausgefüllt sind
-    } else if ((!lettersOnlyRegex.test(firstnameInput)) || (!lettersOnlyRegex.test(lastnameInput))) {
+    } 
+    else if ((!lettersOnlyRegex.test(firstnameInput)) || (!lettersOnlyRegex.test(lastnameInput))) 
+    {
         alert("Bitte für den Namen nur Buchstaben verwenden.");
         return;
-    } else if (!digitsOnlyRegex.test(startnbrInput)) {
+    } 
+    else if (!digitsOnlyRegex.test(startnbrInput)) 
+    {
         alert("Bitte für die Startnummer nur Ziffern von 1-9 verwenden.");
         return;
-    } else if (!(yearRegex.test(birthyearInput) && parseInt(birthyearInput) <= currentYear)) {
+    } 
+    else if (!(yearRegex.test(birthyearInput) && parseInt(birthyearInput) <= currentYear)) 
+    {
         alert("Bitte eine gültige Jahreszahl eingeben.");
         return;
     }
@@ -218,7 +234,8 @@ async function createMemberTable() {
             body: JSON.stringify(jsonData)
         });
 
-        if (response.ok) {
+        if (response.ok) 
+        {
             //******************************************************************
             // show existing grouptables
             //******************************************************************
@@ -244,7 +261,9 @@ async function createMemberTable() {
             document.getElementById("bodinger").checked = false;
             document.getElementById("cupmember").checked = false;
 
-        } else {
+        } 
+        else 
+        {
             console.error("Fehler beim Hinzufügen:", response.statusText);
         }
     } catch (error) {
@@ -254,13 +273,15 @@ async function createMemberTable() {
 
 function displayMembers(members) {
     const table = document.getElementById('membertable');
-    if (!table) {
+    if (!table) 
+    {
         throw new Error('Element mit der ID "membertable" wurde nicht gefunden.');
     }
 
     members.forEach(member => {
         // Überprüfen, ob die Gruppe bereits angezeigt wird
-        if (displayedMemberStartNbrs.includes(member.startnbr)) {
+        if (displayedMemberStartNbrs.includes(member.startnbr)) 
+        {
             return; // Bereits angezeigte Gruppe überspringen
         }
 
@@ -291,12 +312,14 @@ function displayMembers(members) {
 }
 
 async function deleteSelectedMemberRow(selectedMemberRow) {
-    if (selectedMemberRow) {
+    if (selectedMemberRow) 
+    {
 
         const memberStartnbr = selectedMemberRow.firstElementChild.textContent;
         console.log("Deleting member with ID:", memberStartnbr);
 
-        if (memberStartnbr) {
+        if (memberStartnbr) 
+        {
             try {
                 const response = await fetch(`/members/${memberStartnbr}`, {
                     method: 'DELETE',
@@ -305,20 +328,27 @@ async function deleteSelectedMemberRow(selectedMemberRow) {
                     }
                 });
 
-                if (response.ok) {
+                if (response.ok) 
+                {
                     selectedMemberRow.remove(); // Die ausgewählte Zeile entfernen
-                } else {
+                } 
+                else 
+                {
                     alert('Failed to delete the member.');
                 }
             } catch (error) {
                 console.error('Error:', error);
                 alert('An error occurred while deleting the member.');
             }
-        } else {
+        } 
+        else 
+        {
             alert('No group ID provided.');
         }
         selectedMemberRow = null; // Die Auswahl zurücksetzen
-    } else {
+    } 
+    else 
+    {
         alert("Es wurde keine Zeile ausgewählt.");
     }
 }
@@ -334,7 +364,8 @@ async function groupManagement() {
     //******************************************************************
     try {
         const response = await fetch('/groups');
-        if (!response.ok) {
+        if (!response.ok) 
+        {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const groups = await response.json();
@@ -348,7 +379,8 @@ async function groupManagement() {
     // add group to grouptable
     //******************************************************************
     const buttonAdd = document.getElementById("buttonAddGroup");
-    if (!buttonAdd) {
+    if (!buttonAdd) 
+    {
         console.error('Element mit der ID "buttonAddGroup" wurde nicht gefunden.');
         return;
     }
@@ -366,11 +398,14 @@ async function groupManagement() {
     var selectedGroupRow = null;
 
     const grouptable = document.getElementById("grouptable");
-    if (grouptable) {
+    if (grouptable) 
+    {
         grouptable.addEventListener("click", function (event) {
             var clickedGroupRow = event.target.parentNode; // Das TR-Element der angeklickten Zelle abrufen
-            if ( (clickedGroupRow.tagName === "TR") && !(event.target.tagName === "TH") ) {
-                if (selectedGroupRow) {
+            if ( (clickedGroupRow.tagName === "TR") && !(event.target.tagName === "TH") ) 
+            {
+                if (selectedGroupRow) 
+                {
                     // Wenn bereits eine Zeile ausgewählt wurde, die Markierung entfernen
                     selectedGroupRow.classList.remove("selected");
                 }
@@ -379,24 +414,30 @@ async function groupManagement() {
                 selectedGroupRow.classList.add("selected");
             }
         });
-    } else {
+    } 
+    else 
+    {
         console.error('Element mit der ID "grouptable" wurde nicht gefunden.');
     }
 
     const buttonDeleteGroup = document.getElementById("buttonDeleteGroup");
-    if (buttonDeleteGroup) {
+    if (buttonDeleteGroup) 
+    {
         buttonDeleteGroup.addEventListener("click", (event) => {
             event.preventDefault(); // Verhindert die Standardaktion des Ereignisses (in diesem Fall das Neuladen der Seite)
             deleteSelectedGroupRow(selectedGroupRow);
         });
-    } else {
+    } 
+    else 
+    {
         console.error('Element mit der ID "buttonDeleteGroup" wurde nicht gefunden.');
     }
 }
 
 async function createGroupTable() {
     const form = document.getElementById("groupForm");
-    if (!form) {
+    if (!form) 
+    {
         console.error('Element mit der ID "groupForm" wurde nicht gefunden.');
         return;
     }
@@ -421,16 +462,23 @@ async function createGroupTable() {
     const currentYear = new Date().getFullYear();
 
     // Überprüfen, ob alle Eingabefelder ausgefüllt sind
-    if (nameInput === "" || startYearInput === "" || endYearInput === "" || genderInput === "" || bodingerInput === "") {
+    if (nameInput === "" || startYearInput === "" || endYearInput === "" || genderInput === "" || bodingerInput === "") 
+    {
         alert("Bitte füllen Sie alle Felder aus.");
         return; // Die Funktion wird beendet, wenn nicht alle Felder ausgefüllt sind
-    } else if (!(yearRegex.test(startYearInput) && parseInt(startYearInput) <= currentYear)) {
+    } 
+    else if (!(yearRegex.test(startYearInput) && parseInt(startYearInput) <= currentYear)) 
+    {
         alert("Bitte eine gültige Jahreszahl für das Startjahr eingeben.");
         return;
-    } else if (!(yearRegex.test(endYearInput) && parseInt(endYearInput) <= currentYear)) {
+    } 
+    else if (!(yearRegex.test(endYearInput) && parseInt(endYearInput) <= currentYear)) 
+    {
         alert("Bitte eine gültige Jahreszahl für das Endjahr eingeben.");
         return;
-    } else if (parseInt(startYearInput) > parseInt(endYearInput)) {
+    } 
+    else if (parseInt(startYearInput) > parseInt(endYearInput)) 
+    {
         alert("Das Startjahr muss kleiner als das Endjahr sein.");
         return;
     }
@@ -446,7 +494,8 @@ async function createGroupTable() {
             body: JSON.stringify(jsonData)
         });
 
-        if (response.ok) {
+        if (response.ok) 
+        {
             //******************************************************************
             // show existing grouptables
             //******************************************************************
@@ -470,7 +519,9 @@ async function createGroupTable() {
             document.getElementById("gender").value = "default";
             document.getElementById("bodinger").checked = false;
 
-        } else {
+        } 
+        else 
+        {
             console.error("Fehler beim Hinzufügen:", response.statusText);
         }
     } catch (error) {

@@ -1,3 +1,7 @@
+.material-icons {
+  color: #000000 !important;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -23,7 +27,7 @@ h1 {
   text-align: center;
   color: #000000; 
   font-family: 'Montserrat', sans-serif; 
-  font-size: 56pt; 
+  font-size: 50px; 
   font-weight: bold;
 }
 
@@ -39,37 +43,75 @@ h2 {
 .startImg {
   position: relative;
   width: 100%;
-  height: 100vh; /* Vollbild-Höhe, du kannst dies anpassen */
-  background: url('../img/rodelrennen_neu.jpeg') no-repeat center center/cover;
+  height: 100vh; /* Vollbild-Höhe */
+  background: url('../img/rodelrennen_v3.jpg') no-repeat center center/cover;
   display: flex;
+  flex-direction: column; /* Ändert die Flex-Richtung zu vertikal */
   justify-content: center;
   align-items: center;
   text-align: center;
 }
 
-/* Setze das Bild auf volle Breite */
-.startImg img {
-  width: 100%;
-  height: auto; /* Behält das Seitenverhältnis bei */
-  display: block; /* Entfernt die kleinen Lücken unter Bildern */
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  height: 30%;
+  align-items: center;
+  margin-bottom: 20px; /* Abstand zwischen textContainer und facts */
 }
 
 .startImg h1 {
-  position: relative;
-  text-align: center;
-  height: 80%;
   color: #000000; 
   font-family: 'Montserrat', sans-serif; 
-  font-size: 56pt; 
+  font-size: 70px; 
   font-weight: bold;
+  margin: 0; /* Entfernt den Standardaußenabstand */
 }
 
-/* .startImg h3 {
-  position: relative;
-  text-align: center;
+.startImg h2 {
+  color: #000000; 
   font-family: 'Montserrat', sans-serif; 
   font-weight: bold;
-} */
+  font-size: 30px; 
+  margin: 0; /* Entfernt den Standardaußenabstand */
+}
+
+.facts {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 75%;
+  height: 50%;
+}
+
+.circleContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.circle {
+  width: 150px;
+  height: 150px;
+  background-color: transparent; /* Kreisfarbe */
+  color: #000000; /* Textfarbe */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%; /* Rundung */
+  font-family: 'Montserrat', sans-serif; 
+  font-size: 50px; /* Schriftgröße */
+  font-weight: bold; /* Schriftgewicht */
+  border: 5px solid #007BFF;
+}
+
+.circleLabel {
+  margin-top: 10px; /* Abstand zwischen dem Kreis und der Beschriftung */
+  font-family: 'Montserrat', sans-serif; 
+  font-size: 30px; /* Schriftgröße */
+  font-weight: bold; /* Schriftgewicht */
+  color: #000000; /* Textfarbe */
+}
 
 .blue-text {
   color: #007BFF; 
@@ -83,6 +125,10 @@ table {
   padding-left: 10%;
   padding-right: 10%;
   text-align: center;
+}
+
+#results table {
+  padding-bottom: 40px;
 }
 
 thead th,
@@ -196,6 +242,10 @@ td {
   margin-top: 28px;
 }
 
+#buttonPrint {
+  width: 10%;
+}
+
 button {
   padding: 10px;
   background-color: #007BFF;
@@ -230,6 +280,7 @@ button:active {
 .time-inputs span {
   margin: 0 5px;
 }
+
 
 @media print {
   /* Blendet alle Elemente außer dem <article> aus */
