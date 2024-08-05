@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const url = this.href;
 
+            links.forEach(link => link.classList.remove('active-link'));
+            this.classList.add('active-link');
+
             // use Fetch API to load content
             fetch(url)
                 .then(response => {
@@ -53,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     else if (pageType === 'teilnehmerbearbeitung') 
                     {
                         console.log('Teilnehmerbearbeitung Seite ist geladen.');
-                        participantProcessing();
+                        memberProcessing();
                     } 
                     else if (pageType === 'zeiterfassung') 
                     {
@@ -81,10 +84,10 @@ document.addEventListener('DOMContentLoaded', function() {
 // page specific scripts
 //******************************************************************
 
-// participant processing
+// member processing
 let displayedMemberStartNbrs = [];
 
-async function participantProcessing() {
+async function memberProcessing() {
 
     displayedMemberStartNbrs = [];
     //******************************************************************
@@ -260,7 +263,6 @@ async function createMemberTable() {
             document.getElementById("gender").value = "default";
             document.getElementById("bodinger").checked = false;
             document.getElementById("cupmember").checked = false;
-
         } 
         else 
         {
@@ -531,13 +533,15 @@ async function createGroupTable() {
 
 function displayGroups(groups) {
     const table = document.getElementById('grouptable');
-    if (!table) {
+    if (!table) 
+    {
         throw new Error('Element mit der ID "grouptable" wurde nicht gefunden.');
     }
 
     groups.forEach(group => {
         // Überprüfen, ob die Gruppe bereits angezeigt wird
-        if (displayedGroupIds.includes(group.id)) {
+        if (displayedGroupIds.includes(group.id)) 
+        {
             return; // Bereits angezeigte Gruppe überspringen
         }
 
@@ -565,12 +569,14 @@ function displayGroups(groups) {
 }
 
 async function deleteSelectedGroupRow(selectedGroupRow) {
-    if (selectedGroupRow) {
+    if (selectedGroupRow) 
+    {
 
         const groupId = selectedGroupRow.firstElementChild.textContent;
         console.log("Deleting group with ID:", groupId);
 
-        if (groupId) {
+        if (groupId) 
+        {
             try {
                 const response = await fetch(`/groups/${groupId}`, {
                     method: 'DELETE',
@@ -579,20 +585,27 @@ async function deleteSelectedGroupRow(selectedGroupRow) {
                     }
                 });
 
-                if (response.ok) {
+                if (response.ok) 
+                {
                     selectedGroupRow.remove(); // Die ausgewählte Zeile entfernen
-                } else {
+                } 
+                else 
+                {
                     alert('Failed to delete the group.');
                 }
             } catch (error) {
                 console.error('Error:', error);
                 alert('An error occurred while deleting the group.');
             }
-        } else {
+        } 
+        else 
+        {
             alert('No group ID provided.');
         }
         selectedGroupRow = null; // Die Auswahl zurücksetzen
-    } else {
+    } 
+    else 
+    {
         alert("Es wurde keine Zeile ausgewählt.");
     }
 }
@@ -623,7 +636,8 @@ function timeRecording() {
 
 function loadMemberValues() {
     const startnbrInput = document.getElementById("startnbr");
-    if (!startnbrInput) {
+    if (!startnbrInput) 
+    {
         console.error('Element mit der ID "startnbr" wurde nicht gefunden.');
         return;
     }
@@ -641,7 +655,8 @@ function loadMemberValues() {
 
     startnbrInput.addEventListener("blur", () => {
         const startnbr = startnbrInput.value;
-        if (startnbr) {
+        if (startnbr) 
+        {
             fetch(`/members/${startnbr}`)
                 .then(response => {
                     if (response.ok) {
@@ -711,7 +726,8 @@ function loadMemberValues() {
 
 async function setTime() {
     const form = document.getElementById("timeForm");
-    if (!form) {
+    if (!form) 
+    {
         console.error('Element mit der ID "timeForm" wurde nicht gefunden.');
         return;
     }
@@ -733,16 +749,23 @@ async function setTime() {
     const maxTwoDigitRegEx = /^\d{1,2}$/;
 
     // Überprüfen, ob alle Eingabefelder ausgefüllt sind
-    if (startnbrInput === "" || minInput === "" || secInput === "" || msInput === "") {
+    if (startnbrInput === "" || minInput === "" || secInput === "" || msInput === "") 
+    {
         alert("Bitte füllen Sie alle Felder aus.");
         return; // Die Funktion wird beendet, wenn nicht alle Felder ausgefüllt sind
-    } else if ( !maxTwoDigitRegEx.test(minInput) ) {
+    } 
+    else if ( !maxTwoDigitRegEx.test(minInput) ) 
+    {
         alert("Es darf nur eine 2 stellige Zahl für Minuten eingegeben werden.");
         return;
-    } else if ( !(maxTwoDigitRegEx.test(secInput) && (secInput >= 0) && (secInput <= 59) ) ) {
+    } 
+    else if ( !(maxTwoDigitRegEx.test(secInput) && (secInput >= 0) && (secInput <= 59) ) ) 
+    {
         alert("Es darf nur eine 2 stellige Zahl (0-59) für Sekunden eingegeben werden.");
         return;
-    } else if ( !(maxTwoDigitRegEx.test(msInput) && (msInput >= 0) && (msInput <= 99) ) ) {
+    }
+    else if ( !(maxTwoDigitRegEx.test(msInput) && (msInput >= 0) && (msInput <= 99) ) ) 
+    {
         alert("Es darf nur eine 2 stellige Zahl (0-99) für Hundertstel eingegeben werden.");
         return;
     }
@@ -758,14 +781,20 @@ async function setTime() {
           body: JSON.stringify(jsonData),
         });
         
-        if (response.status === 200) {
+        if (response.status === 200) 
+        {
           alert('Zeit wurde erfolgreich aktualisiert.');
-        } else if (response.status === 201) {
+        } 
+        else if (response.status === 201) 
+        {
           alert('Neuer Teilnehmer erfolgreich hinzugefügt.');
-        } else {
+        } 
+        else 
+        {
           alert('Ein Fehler ist aufgetreten.');
         }
-    } catch (error) {
+    } 
+    catch (error) {
         console.error('Fehler bei der Anfrage:', error);
         alert('Ein Fehler ist aufgetreten.');
     }
@@ -778,7 +807,8 @@ async function resultList() {
     //******************************************************************
     try {
         const response = await fetch('/groups');
-        if (!response.ok) {
+        if (!response.ok) 
+        {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const groups = await response.json();
@@ -791,13 +821,16 @@ async function resultList() {
 
 async function loadResults(groups) {
     const results = document.getElementById('results');
-    if (!results) {
+    if (!results) 
+    {
         throw new Error('Element mit der ID "results" wurde nicht gefunden.');
     }
 
     try {
         const response = await fetch('/members');
-        if (!response.ok) {
+
+        if (!response.ok) 
+        {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const members = await response.json();

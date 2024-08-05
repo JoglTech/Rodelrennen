@@ -2,6 +2,10 @@
   color: #000000 !important;
 }
 
+.active-link, .mdl-navigation__link:hover {
+  color: #bbbbbb !important;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -13,10 +17,6 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-}
-
-main {
-  display: flexbox;
 }
 
 article {
@@ -43,10 +43,10 @@ h2 {
 .startImg {
   position: relative;
   width: 100%;
-  height: 100vh; /* Vollbild-Höhe */
+  height: 100vh;
   background: url('../img/rodelrennen_v3.jpg') no-repeat center center/cover;
   display: flex;
-  flex-direction: column; /* Ändert die Flex-Richtung zu vertikal */
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -57,7 +57,7 @@ h2 {
   flex-direction: column;
   height: 30%;
   align-items: center;
-  margin-bottom: 20px; /* Abstand zwischen textContainer und facts */
+  margin-bottom: 20px;
 }
 
 .startImg h1 {
@@ -65,7 +65,7 @@ h2 {
   font-family: 'Montserrat', sans-serif; 
   font-size: 70px; 
   font-weight: bold;
-  margin: 0; /* Entfernt den Standardaußenabstand */
+  margin: 0;
 }
 
 .startImg h2 {
@@ -73,7 +73,7 @@ h2 {
   font-family: 'Montserrat', sans-serif; 
   font-weight: bold;
   font-size: 30px; 
-  margin: 0; /* Entfernt den Standardaußenabstand */
+  margin: 0;
 }
 
 .facts {
@@ -93,31 +93,30 @@ h2 {
 .circle {
   width: 150px;
   height: 150px;
-  background-color: transparent; /* Kreisfarbe */
-  color: #000000; /* Textfarbe */
+  background-color: transparent;
+  color: #000000;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 50%; /* Rundung */
+  border-radius: 50%;
   font-family: 'Montserrat', sans-serif; 
-  font-size: 50px; /* Schriftgröße */
-  font-weight: bold; /* Schriftgewicht */
+  font-size: 50px;
+  font-weight: bold;
   border: 5px solid #007BFF;
 }
 
 .circleLabel {
-  margin-top: 10px; /* Abstand zwischen dem Kreis und der Beschriftung */
+  margin-top: 10px;
   font-family: 'Montserrat', sans-serif; 
-  font-size: 30px; /* Schriftgröße */
-  font-weight: bold; /* Schriftgewicht */
-  color: #000000; /* Textfarbe */
+  font-size: 30px;
+  font-weight: bold;
+  color: #000000;
 }
 
 .blue-text {
   color: #007BFF; 
 }
 
-/* Allgemeine Formatierung der Tabelle */
 table {
   border-collapse: separate;
   border-spacing: 0;
@@ -182,14 +181,14 @@ td {
   width: 16%;
 }
 
-.form-group-pp {
+.form-group-mp {
   flex: 1 1 calc(25% - 20px);
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
 }
 
-.form-group input, .form-group-pp input, .time-input-container input {
+.form-group input, .form-group-mp input, .time-input-container input {
   height: 32px;
   font-size: 13pt;
   background-color: #bbbbbb;
@@ -204,14 +203,14 @@ td {
   cursor: default;
 }
 
-.form-group select, .form-group-pp select {
+.form-group select, .form-group-mp select {
   height: 34px;
   font-size: 13pt;
   background-color: #bbbbbb;
   border: none;
 }
 
-.form-group label, .form-group-pp label, .form-readonly label {
+.form-group label, .form-group-mp label, .form-readonly label {
   order: -1; /* Stellt sicher, dass das Label über dem Input steht */
   text-align: center;
   margin-bottom: 20px;
@@ -281,9 +280,8 @@ button:active {
   margin: 0 5px;
 }
 
-
 @media print {
-  /* Blendet alle Elemente außer dem <article> aus */
+  
   body * {
       visibility: hidden;
   }
@@ -291,12 +289,10 @@ button:active {
       visibility: visible;
   }
 
-  /* Verhindert das Drucken von divs mit der Klasse buttonPrint */
   .buttonPrint {
     display: none;
   }
 
-  /* Stellt sicher, dass nur der <article> angezeigt wird */
   @page {
       margin: 0;
   }
@@ -305,12 +301,12 @@ button:active {
     position: absolute;
     top: 5%;
     left: 0;
-    width: 100%; /* Verkleinert die Breite des Druckbereichs */
+    width: 100%;
     height: auto;
-    margin: auto; /* Zentriert das Artikel */
-    padding: 1cm; /* Optional: Innenabstände für besseren Druck */
+    margin: auto;
+    padding: 1cm;
     box-sizing: border-box;
-    transform: scale(0.6); /* Skalierung für kleinere Darstellung */
+    transform: scale(0.6);
     transform-origin: top left;
   }
   

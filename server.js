@@ -27,8 +27,8 @@ app.get('/gm', (req, res) => {
   res.sendFile(pathToFile);
 });
 
-app.get('/pp', (req, res) => {
-  const pathToFile = path.join(__dirname, 'static', 'html', 'participant_processing.html');
+app.get('/mp', (req, res) => {
+  const pathToFile = path.join(__dirname, 'static', 'html', 'member_processing.html');
   res.sendFile(pathToFile);
 });
 
