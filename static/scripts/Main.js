@@ -189,7 +189,7 @@ async function createMemberTable() {
     const cupmemberInput = jsonData.cupmember;
 
     // Regulärer Ausdruck für Buchstaben (nur Groß- und Kleinbuchstaben)
-    const lettersOnlyRegex = /^[a-zA-Z\s\-]+$/;
+    const lettersOnlyRegex = /^[a-zA-ZäöüÄÖÜß\s\-]+$/;
     // Regulärer Ausdruck für Ziffern
     const digitsOnlyRegex = /^\d+$/;
     // Regulärer Ausdruck für eine vierstellige Jahreszahl
