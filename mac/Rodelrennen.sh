@@ -9,4 +9,4 @@ cd /Users/jakob/Desktop/Programmieren/Projekte/Rodelrennen
 # Warten, bis der Server vollständig gestartet ist (anpassen, falls notwendig)
 sleep 2
 
-open http://localhost:8000
+open -a "Google Chrome" http://localhost:8000
